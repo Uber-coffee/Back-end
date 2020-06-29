@@ -5,6 +5,7 @@ import auth.entity.Role;
 import auth.exception.TokenException;
 import auth.exception.UserNotFoundException;
 import auth.repository.InvalidTokenRepository;
+import auth.service.user_details.CustomerDetailsService;
 import auth.service.user_details.UserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -35,16 +36,19 @@ public abstract class TokenProvider {
 
     private final UserDetailsService userDetailsService;
 
+    private final CustomerDetailsService customerDetailsService;
+
     protected TokenProvider(String header,
                             String tokenType,
                             InvalidTokenRepository invalidTokenRepository,
                             AppProperties.Token tokenProperties,
-                            UserDetailsService userDetailsService) {
+                            UserDetailsService userDetailsService, CustomerDetailsService customerDetailsService) {
         HEADER = header;
         TOKEN_TYPE = tokenType;
         this.invalidTokenRepository = invalidTokenRepository;
         this.tokenProperties = tokenProperties;
         this.userDetailsService = userDetailsService;
+        this.customerDetailsService = customerDetailsService;
     }
 
     public String resolveToken(HttpServletRequest httpServletRequest) throws TokenException {
@@ -140,8 +144,14 @@ public abstract class TokenProvider {
     public Authentication getAuthentication(HttpServletRequest httpServletRequest)
             throws TokenException, UserNotFoundException {
         final String subject = getSubject(httpServletRequest);
+        final List<String> roles = getRoles(httpServletRequest);
         try {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
+            UserDetails userDetails;
+            if(roles.contains(Role.ROLE_CUSTOMER.name())) {
+                userDetails = customerDetailsService.loadUserByUsername(subject);
+            } else {
+                userDetails = userDetailsService.loadUserByUsername(subject);
+            }
             return new UsernamePasswordAuthenticationToken(
                     userDetails.getUsername(),
                     userDetails.getPassword(),
