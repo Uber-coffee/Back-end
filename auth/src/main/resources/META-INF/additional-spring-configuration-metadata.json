@@ -1,0 +1,43 @@
+{
+  "properties": [
+    {
+      "name": "application.security.accessToken.secret",
+      "type": "java.lang.String",
+      "description": "Access token secret."
+    },
+    {
+      "name": "application.security.accessToken.expire",
+      "type": "java.lang.Long",
+      "description": "Access token expire time in msec."
+    },
+    {
+      "name": "application.security.refreshToken.secret",
+      "type": "java.lang.String",
+      "description": "Refresh token secret."
+    },
+    {
+      "name": "application.security.refreshToken.expire",
+      "type": "java.lang.Long",
+      "description": "Refresh token expire time in msec."
+    },
+    {
+      "name": "application.admin.email",
+      "type": "java.lang.String",
+      "description": "Admin email."
+    },
+    {
+      "name": "application.admin.firstName",
+      "type": "java.lang.String",
+      "description": "Admin first name."
+    },
+    {
+      "name": "application.admin.lastName",
+      "type": "java.lang.String",
+      "description": "Admin last name."
+    },
+    {
+      "name": "application.admin.password",
+      "type": "java.lang.String",
+      "description": "Admin password."
+    }
+  ] }
