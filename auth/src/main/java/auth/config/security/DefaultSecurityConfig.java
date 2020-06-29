@@ -16,6 +16,8 @@ public class DefaultSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String[] WHITE_LIST = {
             "/w/auth/login",
+            "/m/auth/login",
+            "/m/auth/signup",
             "/auth/refresh"
     };
 
