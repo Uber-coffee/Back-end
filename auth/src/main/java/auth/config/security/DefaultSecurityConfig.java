@@ -20,8 +20,9 @@ public class DefaultSecurityConfig extends WebSecurityConfigurerAdapter {
             "/m/auth/login",
             "/m/auth/signup",
             "/auth/refresh",
+            "/configuration/ui",
+            "/configuration/security",
             "/swagger-resources/**",
-            "/configuration/**",
             "/swagger-ui.html",
             "/v2/api-docs",
             "/webjars/**"
