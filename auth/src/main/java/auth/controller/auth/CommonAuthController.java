@@ -1,5 +1,6 @@
 package auth.controller.auth;
 
+import auth.config.swagger2.SwaggerMethodToDocument;
 import auth.exception.TokenException;
 import auth.exception.UserNotFoundException;
 import auth.service.auth.CommonAuthService;
@@ -20,6 +21,7 @@ public class CommonAuthController {
         this.commonAuthService = commonAuthService;
     }
 
+    @SwaggerMethodToDocument
     @PostMapping(value = "/refresh")
     public void refresh(HttpServletRequest httpServletRequest,
                         HttpServletResponse httpServletResponse)
@@ -27,6 +29,7 @@ public class CommonAuthController {
         commonAuthService.refresh(httpServletRequest, httpServletResponse);
     }
 
+    @SwaggerMethodToDocument
     @PostMapping(value = "/logout")
     public void logout(HttpServletRequest httpServletRequest) throws TokenException {
         commonAuthService.logout(httpServletRequest);

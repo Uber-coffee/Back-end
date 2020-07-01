@@ -1,5 +1,6 @@
 package auth.controller.auth;
 
+import auth.config.swagger2.SwaggerMethodToDocument;
 import auth.exception.TokenException;
 import auth.exception.UserAlreadyExistException;
 import auth.payload.MobileSignupRequest;
@@ -23,11 +24,13 @@ public class MobileAuthController {
         this.mobileAuthService = mobileAuthService;
     }
 
+    @SwaggerMethodToDocument
     @PostMapping(value = "/login")
     public void login(@RequestParam String idToken, HttpServletResponse httpServletResponse) throws TokenException {
         mobileAuthService.login(idToken, httpServletResponse);
     }
 
+    @SwaggerMethodToDocument
     @PostMapping(value = "/signup")
     public void signup(@Valid @RequestBody MobileSignupRequest mobileSignupRequest,
                        HttpServletResponse httpServletResponse) throws TokenException, UserAlreadyExistException {

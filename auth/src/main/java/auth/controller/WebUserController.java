@@ -1,5 +1,6 @@
 package auth.controller;
 
+import auth.config.swagger2.SwaggerMethodToDocument;
 import auth.entity.Role;
 import auth.exception.UserAlreadyExistException;
 import auth.payload.CreateUserRequest;
@@ -22,12 +23,14 @@ public class WebUserController {
         this.webUserService = webUserService;
     }
 
+    @SwaggerMethodToDocument
     @PostMapping(value = "/manager")
     @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
     public void createManager(@Valid @RequestBody CreateUserRequest createUserRequest) throws UserAlreadyExistException {
         webUserService.createUser(createUserRequest, Role.ROLE_MANAGER);
     }
 
+    @SwaggerMethodToDocument
     @PostMapping(value = "/seller")
     @PreAuthorize(value = "hasRole('ROLE_ADMIN') or hasRole('ROLE_SELLER')")
     public void createSeller(@Valid @RequestBody CreateUserRequest createUserRequest) throws UserAlreadyExistException {

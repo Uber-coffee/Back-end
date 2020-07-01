@@ -1,6 +1,7 @@
 package auth.entity;
 
-import lombok.AllArgsConstructor;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -23,6 +24,7 @@ import java.util.List;
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email")
 })
+@ApiModel
 @Data
 @NoArgsConstructor
 public class User {
@@ -31,12 +33,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ApiModelProperty(notes = "Provide User's First Name", example = "Ivan")
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    @ApiModelProperty(notes = "Provide User's Second Name", example = "Ivanov")
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @ApiModelProperty(notes = "Provide User's e-mail", example = "proverka@kgb.ru")
     @Column(unique = true, nullable = false)
     @Email
     private String email;
