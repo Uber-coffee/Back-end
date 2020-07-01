@@ -1,7 +1,5 @@
 package auth.entity;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -21,7 +19,6 @@ import javax.persistence.UniqueConstraint;
         @UniqueConstraint(columnNames = "phone_number")
 })
 
-@ApiModel
 @Data
 @NoArgsConstructor
 public class Customer {
@@ -30,15 +27,12 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ApiModelProperty(notes = "Provide Customer's First Name", example = "Ivan")
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @ApiModelProperty(notes = "Provide Customer's Second Name", example = "Ivanov")
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @ApiModelProperty(notes = "Provide Customer's Phone Number, formatting +[reg][phone number] or 8[phone number]", example = "+73222281337 or 88005553535")
     @Column(name = "phone_number", unique = true, nullable = false)
     private String phoneNumber;
 
@@ -53,5 +47,4 @@ public class Customer {
     public void setRegistrationDate(){
         registrationDate = DateTime.now();
     }
-
 }
