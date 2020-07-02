@@ -1,5 +1,6 @@
 package auth.controller.auth;
 
+import auth.config.swagger2.SwaggerMethodToDocument;
 import auth.payload.WebLoginRequest;
 import auth.service.auth.WebAuthService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ public class WebAuthController {
         this.webAuthService = webAuthService;
     }
 
+    @SwaggerMethodToDocument
     @PostMapping(value = "/login")
     public void login(@Valid @RequestBody WebLoginRequest webLoginRequest, HttpServletResponse httpServletResponse) {
         webAuthService.login(webLoginRequest, httpServletResponse);

@@ -14,11 +14,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Order(1)
 public class DefaultSecurityConfig extends WebSecurityConfigurerAdapter {
 
+
     public static final String[] WHITE_LIST = {
             "/w/auth/login",
             "/m/auth/login",
             "/m/auth/signup",
-            "/auth/refresh"
+            "/auth/refresh",
+            "/configuration/**",
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**"
     };
 
     private final AccessTokenProvider accessTokenProvider;
@@ -51,6 +57,4 @@ public class DefaultSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated();
     }
-
-
 }
