@@ -31,6 +31,8 @@ public class MobileSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable();
 
+        http.cors();
+
         http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
