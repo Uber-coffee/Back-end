@@ -20,9 +20,15 @@ node {
         )
     }
 
-    stage('Build and Test') {
-        docker.image('maven:3.6.3-openjdk-11').inside {
-            sh 'cd auth && mvn test'
+    docker.image('maven:3.6.3-openjdk-11').inside {
+        stage('Docker test') {
+            sh 'mvn --version'
         }
     }
+
+//    stage('Build and Test') {
+//        docker.image('maven:3.6.3-openjdk-11').inside {
+//            sh 'cd auth && mvn test'
+//        }
+//    }
 }
