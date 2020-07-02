@@ -14,11 +14,14 @@ node {
     }
 
     stage('Telegram test') {
-        telegramSend 'Hello from jenkins'
+        telegramSend(
+                message: 'Hello from jenkins',
+                chatId: -1001336690990
+        )
     }
 
     stage('Build and Test') {
-        docker.withServer('tcp://ecse005008ef.epam.com:2375') {
+        docker.withDockerServer('tcp://ecse005008ef.epam.com:2375') {
             docker.image('maven:3.6.3-openjdk-11').inside {
                 sh 'cd auth && mvn test'
             }
