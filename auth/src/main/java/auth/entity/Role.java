@@ -8,4 +8,14 @@ public enum Role implements GrantedAuthority {
     public String getAuthority() {
         return name();
     }
+
+    public static Role getRole(String s){
+        switch (s) {
+            case "ROLE_ADMIN": return ROLE_ADMIN;
+            case "ROLE_MANAGER": return ROLE_MANAGER;
+            case "ROLE_SELLER": return ROLE_SELLER;
+            case "ROLE_CUSTOMER": return ROLE_CUSTOMER;
+            default: return null;
+        }
+    }
 }
