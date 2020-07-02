@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccessTokenProvider extends TokenProvider {
 
-    private static final String HEADER = "Authorization";
+    public static final String HEADER = "Authorization";
 
     private static final String TOKEN_TYPE = "Bearer";
 
