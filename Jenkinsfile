@@ -1,11 +1,7 @@
 #!/usr/bin/env groovy
 
 pipeline {
-    agent {
-        docker {
-            image
-        }
-    }
+    agent any
 
     stages {
         stage('git') {
