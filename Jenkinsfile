@@ -18,9 +18,10 @@ node {
     }
 
     stage('Build and Test') {
-        def maven = docker.image('maven:3.6.3-openjdk-11')
-        maven.inside {
-            run_sh_command('cd auth && mvn test')
+        docker.withServer('tcp://ecse005008ef.epam.com:2375') {
+            docker.image('maven:3.6.3-openjdk-11').inside {
+                sh 'cd auth && mvn test'
+            }
         }
     }
 }
