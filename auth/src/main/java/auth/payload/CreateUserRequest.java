@@ -23,6 +23,7 @@ public class CreateUserRequest {
     @NotBlank
     private String lastName;
 
+    @Pattern(regexp = "^(\\+\\d{10,15})|(8\\d{10})$")
     @NotBlank
     private String phoneNumber;
 
