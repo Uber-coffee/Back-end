@@ -4,6 +4,8 @@ import auth.config.swagger2.SwaggerMethodToDocument;
 import auth.exception.TokenException;
 import auth.exception.UserNotFoundException;
 import auth.service.auth.CommonAuthService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Api
 @RestController
 @RequestMapping(value = "/auth")
 public class CommonAuthController {
@@ -23,6 +26,7 @@ public class CommonAuthController {
 
     @SwaggerMethodToDocument
     @PostMapping(value = "/refresh")
+    @ApiOperation(value = "Refresh your token")
     public void refresh(HttpServletRequest httpServletRequest,
                         HttpServletResponse httpServletResponse)
             throws TokenException, UserNotFoundException {
@@ -31,6 +35,7 @@ public class CommonAuthController {
 
     @SwaggerMethodToDocument
     @PostMapping(value = "/logout")
+    @ApiOperation(value = "Register someone's log-out")
     public void logout(HttpServletRequest httpServletRequest) throws TokenException {
         commonAuthService.logout(httpServletRequest);
     }
