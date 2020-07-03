@@ -33,12 +33,12 @@ node {
                 sh 'mvn -DskipTests package spring-boot:repackage'
             }
         }
-    }
 
-    stage('Build docker image') {
-        docker.withRegistry('http://registry:5000') {
-            def image = docker.build("auth:${env.BUILD_ID}")
-            image.push()
+        stage('Build docker image') {
+            docker.withRegistry('http://registry:5000') {
+                def image = docker.build("auth:${env.BUILD_ID}")
+                image.push()
+            }
         }
     }
 
