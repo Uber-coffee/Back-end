@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class RefreshTokenProvider extends TokenProvider {
 
-    private static final String HEADER = "Refresh-token";
+    public static final String HEADER = "Refresh-token";
 
     private static final String TOKEN_TYPE = "Bearer";
 
