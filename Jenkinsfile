@@ -18,14 +18,6 @@ node {
         )
     }
 
-    stage('debug: ls') {
-        sh 'ls -la'
-    }
-
-    stage('make target directory') {
-        sh 'mkdir -p auth/target'
-    }
-
     dir('auth') {
         docker.image('maven:3.6.3-openjdk-11').inside() {
             stage('Directory listing test') {
@@ -38,22 +30,16 @@ node {
             }
 
             stage('Build project') {
-                sh 'mvn package spring-boot:repackage'
+                sh 'mvn -DskipTests package spring-boot:repackage'
             }
         }
 
-        stage('debug: dir ls') {
-            sh 'ls -la'
-            sh 'echo aaaaaaa'
-            sh 'ls -la target'
+        stage('Build docker image') {
+            docker.withRegistry('http://registry:5000') {
+                def image = docker.build("auth:${env.BUILD_ID}")
+                image.push()
+            }
         }
-
-//        stage('Build docker image') {
-//            docker.withRegistry('http://registry:5000') {
-//                def image = docker.build("auth:${env.BUILD_ID}")
-//                image.push()
-//            }
-//        }
     }
 
 
