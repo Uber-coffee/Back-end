@@ -1,5 +1,7 @@
 package auth.config;
 
+import auth.security.token.AccessTokenProvider;
+import auth.security.token.RefreshTokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,6 +18,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
+                .exposedHeaders(AccessTokenProvider.HEADER, RefreshTokenProvider.HEADER)
                 .allowCredentials(true)
                 .maxAge(MAX_AGE_SEC);
     }
