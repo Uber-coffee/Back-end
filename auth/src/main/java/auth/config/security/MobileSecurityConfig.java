@@ -38,7 +38,7 @@ public class MobileSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http
-                .antMatcher("/w/**")
+                .antMatcher("/m/**")
                 .userDetailsService(customerDetailsService)
                 .addFilterBefore(new MobileTokenAuthFilter(accessTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
