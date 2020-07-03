@@ -40,6 +40,9 @@ public class User {
     @Email
     private String email;
 
+    @Column(name = "phone_number", nullable = false)
+    private String phoneNumber;
+
     @Column(nullable = false)
     private String password;
 
@@ -55,10 +58,11 @@ public class User {
         registrationDate = DateTime.now();
     }
 
-    public User(String firstName, String lastName, String email, String password, List<Role> roles) {
+    public User(String firstName, String lastName, String email, String phoneNumber, String password, List<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.password = password;
         this.roles = roles;
     }

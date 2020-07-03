@@ -36,6 +36,11 @@
       "description": "Admin last name."
     },
     {
+      "name": "application.admin.phoneNumber",
+      "type": "java.lang.String",
+      "description": "Admin phone number."
+    },
+    {
       "name": "application.admin.password",
       "type": "java.lang.String",
       "description": "Admin password."

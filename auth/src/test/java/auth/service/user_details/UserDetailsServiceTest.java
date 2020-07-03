@@ -35,6 +35,7 @@ class UserDetailsServiceTest {
                 "test",
                 "testovich",
                 "test@test.ru",
+                "88005553535",
                 "password",
                 List.of(Role.ROLE_MANAGER)
         );
