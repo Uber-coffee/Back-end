@@ -82,4 +82,18 @@ public class MobileAuthService {
         accessTokenProvider.writeTokenToResponse(accessToken, httpServletResponse);
         refreshTokenProvider.writeTokenToResponse(refreshToken, httpServletResponse);
     }
+
+    private static String generateCodeForService(){
+        final String digits = "0123456789";
+        String result = "";
+
+        for (int i = 0; i < 4; i++) {
+            int pos = (int) (Math.random() * 10);
+            if (pos == 10){pos = 0;}
+
+            result += digits.charAt(pos);
+        }
+
+        return result;
+    }
 }
