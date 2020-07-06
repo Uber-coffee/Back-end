@@ -12,12 +12,10 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 public class MobileSignupRequest {
 
-    @Pattern(regexp = "^[A-Za-zА-Яа-я -.']+$")
-    @NotBlank
+    @Pattern(regexp = "^[A-Za-zА-Яа-я -.']*$")
     private String firstName;
 
-    @Pattern(regexp = "^[A-Za-zА-Яа-я -.']+$")
-    @NotBlank
+    @Pattern(regexp = "^[A-Za-zА-Яа-я -.']*$")
     private String lastName;
 
     @NotBlank

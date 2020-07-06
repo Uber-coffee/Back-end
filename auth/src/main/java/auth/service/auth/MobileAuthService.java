@@ -8,6 +8,7 @@ import auth.repository.CustomerRepository;
 import auth.security.token.AccessTokenProvider;
 import auth.security.token.RefreshTokenProvider;
 import auth.service.phone.PhoneVerifyService;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,6 +42,7 @@ public class MobileAuthService {
         this.accessTokenProvider = accessTokenProvider;
         this.refreshTokenProvider = refreshTokenProvider;
         this.customerRepository = customerRepository;
+        mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
     }
 
     public void login(String idToken, HttpServletResponse httpServletResponse) throws TokenException {
@@ -57,9 +59,9 @@ public class MobileAuthService {
         refreshTokenProvider.writeTokenToResponse(refreshToken, httpServletResponse);
     }
 
-    public void signup(MobileSignupRequest mobileSignupRequest,
-                       HttpServletResponse httpServletResponse)
+    public void signup(MobileSignupRequest mobileSignupRequest, HttpServletResponse httpServletResponse)
             throws TokenException, UserAlreadyExistException {
+
         final String phoneNumber = phoneVerifyService.verifyToken(mobileSignupRequest.getIdToken());
 
         if (customerRepository.existsByPhoneNumber(phoneNumber)) {
