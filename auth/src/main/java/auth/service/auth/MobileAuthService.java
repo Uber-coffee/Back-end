@@ -45,10 +45,12 @@ public class MobileAuthService {
 
     public void login(String idToken, HttpServletResponse httpServletResponse) throws TokenException {
         final String phoneNumber = phoneVerifyService.verifyToken(idToken);
+
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 phoneNumber,
                 ""
         ));
+
         final String accessToken = accessTokenProvider.createToken(auth);
         final String refreshToken = refreshTokenProvider.createToken(auth);
         accessTokenProvider.writeTokenToResponse(accessToken, httpServletResponse);
@@ -59,16 +61,20 @@ public class MobileAuthService {
                        HttpServletResponse httpServletResponse)
             throws TokenException, UserAlreadyExistException {
         final String phoneNumber = phoneVerifyService.verifyToken(mobileSignupRequest.getIdToken());
+
         if (customerRepository.existsByPhoneNumber(phoneNumber)) {
             throw new UserAlreadyExistException();
         }
+
         Customer customer = mapper.map(mobileSignupRequest, Customer.class);
         customer.setPhoneNumber(phoneNumber);
         customerRepository.save(customer);
+
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 phoneNumber,
                 ""
         ));
+
         final String accessToken = accessTokenProvider.createToken(auth);
         final String refreshToken = refreshTokenProvider.createToken(auth);
         accessTokenProvider.writeTokenToResponse(accessToken, httpServletResponse);
