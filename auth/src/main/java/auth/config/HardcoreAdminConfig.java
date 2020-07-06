@@ -22,6 +22,9 @@ public class HardcoreAdminConfig {
     @Value(value = "${application.admin.lastName}")
     private String lastName;
 
+    @Value(value = "${application.admin.phoneNumber}")
+    private String phoneNumber;
+
     @Value(value = "${application.admin.password}")
     private String password;
 
@@ -42,6 +45,7 @@ public class HardcoreAdminConfig {
                             firstName,
                             lastName,
                             email,
+                            phoneNumber,
                             passwordEncoder.encode(password),
                             List.of(Role.ROLE_ADMIN)
                     )

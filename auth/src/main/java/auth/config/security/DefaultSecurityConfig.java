@@ -11,31 +11,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@Order(1)
 public class DefaultSecurityConfig extends WebSecurityConfigurerAdapter {
-
-
-    public static final String[] WHITE_LIST = {
-            "/w/auth/login",
-            "/m/auth/login",
-            "/m/auth/signup",
-            "/auth/refresh",
-            "/configuration/**",
-            "/swagger-resources/**",
-            "/swagger-ui.html",
-            "/v2/api-docs",
-            "/webjars/**"
-    };
 
     private final AccessTokenProvider accessTokenProvider;
 
     public DefaultSecurityConfig(AccessTokenProvider accessTokenProvider) {
         this.accessTokenProvider = accessTokenProvider;
-    }
-
-    @Override
-    public void configure(WebSecurity web) {
-        web.ignoring().antMatchers(WHITE_LIST);
     }
 
     @Override

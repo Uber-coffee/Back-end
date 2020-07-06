@@ -35,6 +35,7 @@ application:
     email: ${ADMIN_EMAIL:admin@admin.ru}
     firstName: ${ADMIN_FIRST_NAME:admin}
     lastName: ${ADMIN_LAST_NAME:admin}
+    phoneNumber: ${ADMIN_PHONE:88005553535}
     password: ${ADMIN_PSWD:Administrator42}
   firebase:
     configUri: ${FIREBASE_CONFIG_URI:null}
