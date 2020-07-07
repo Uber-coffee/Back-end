@@ -85,7 +85,9 @@ public class MobileAuthService {
             log.warn("Your account is running out of MAHNEY");
         }
 
-
+        if (smsResult){
+            //TODO add to repository of current sessions
+        }
 
         if (customerRepository.existsByPhoneNumber(phoneNumber)) {
             throw new UserAlreadyExistException();

@@ -18,7 +18,6 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "customers", uniqueConstraints = {
         @UniqueConstraint(columnNames = "phone_number")
 })
-
 @Data
 @NoArgsConstructor
 public class Customer {
