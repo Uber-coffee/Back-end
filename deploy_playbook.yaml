@@ -6,7 +6,7 @@
     - name: push image to registry
       docker_image:
         name: auth
-        repository: http://registry:5000
+        repository: registry:5000
         tag: "{{ lookup('env', 'BUILD_ID') }}"
         push: yes
         source: local
