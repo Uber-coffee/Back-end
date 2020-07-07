@@ -2,13 +2,13 @@ package auth.service.auth;
 
 import auth.entity.Customer;
 import auth.entity.Role;
-import auth.exception.TokenException;
-import auth.exception.UserAlreadyExistException;
+import auth.exception.*;
 import auth.payload.MobileSignupRequest;
 import auth.repository.CustomerRepository;
 import auth.security.token.AccessTokenProvider;
 import auth.security.token.RefreshTokenProvider;
 import auth.service.phone.PhoneVerifyService;
+import auth.service.phone.PhoneVerifyServiceSMS;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -34,6 +34,8 @@ class MobileAuthServiceTest {
 
     private PhoneVerifyService phoneVerifyService;
 
+    private PhoneVerifyServiceSMS phoneVerifyServiceSMS;
+
     private MobileAuthService mobileAuthService;
 
     private AuthenticationManager authenticationManager;
@@ -47,15 +49,17 @@ class MobileAuthServiceTest {
     private Map<String, Customer> customers;
 
     @BeforeEach
-    public void init() throws TokenException {
+    public void init() throws TokenException, SMSDeliveryException, SMSVerifyException, SMSBalanceException {
         initPhoneVerifyService();
         initAuthenticationManager();
         initAccessTokenProvider();
+        initPhoneVerifyServiceSMS();
         initRefreshToken();
         initCustomerRepository();
         customers = new HashMap<>();
         mobileAuthService = new MobileAuthService(
                 phoneVerifyService,
+                phoneVerifyServiceSMS,
                 authenticationManager,
                 accessTokenProvider,
                 refreshTokenProvider,
@@ -65,6 +69,11 @@ class MobileAuthServiceTest {
     public void initPhoneVerifyService() throws TokenException {
         phoneVerifyService = mock(PhoneVerifyService.class);
         when(phoneVerifyService.verifyToken(anyString())).then(i -> i.getArgument(0));
+    }
+
+    public void initPhoneVerifyServiceSMS() throws SMSVerifyException, SMSDeliveryException, SMSBalanceException {
+        phoneVerifyServiceSMS = mock(PhoneVerifyServiceSMS.class);
+        phoneVerifyServiceSMS.sendVerifyMessage("+79004443322", "1488");
     }
 
     public void initAuthenticationManager() {
