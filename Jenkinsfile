@@ -34,16 +34,13 @@ node {
             }
         }
 
-        stage('dns resolution debug') {
-            sh 'ping -c 3 registry'
-        }
-
         stage('Build docker image') {
-            docker.withRegistry('http://registry:5000') {
-                def image = docker.build("auth:${env.BUILD_ID}")
-                image.push()
-            }
+            docker.build("auth:${env.BUILD_ID}")
         }
+    }
+
+    stage('Push to registry and deploy (playbook)') {
+        ansiblePlaybook playbook: 'deploy_playbook.yaml'
     }
 
     stage('Job success notification') {
