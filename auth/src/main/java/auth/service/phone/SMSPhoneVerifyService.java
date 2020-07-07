@@ -18,7 +18,6 @@ public class SMSPhoneVerifyService implements PhoneVerifyServiceSMS{
     @Override
     public void sendVerifyMessage(String phoneNumber, String code) throws SMSDeliveryException, SMSVerifyException, SMSBalanceException {
         Smsc smsc = new Smsc(login, password);
-        //String adjustedPhoneNumber = ;
 
         String[] retSend = smsc.send_sms(phoneNumber.substring(1), "Ваш пароль: " + code, 0, "", "", 0, "", "");
 
