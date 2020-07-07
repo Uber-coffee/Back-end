@@ -16,7 +16,7 @@ public class SMSPhoneVerifyService implements PhoneVerifyServiceSMS{
 
 
     @Override
-    public void sendVerifyMessage(String phoneNumber, String code) throws SMSDeliveryException, SMSVerifyException, SMSBalanceException {
+    public boolean sendVerifyMessage(String phoneNumber, String code) throws SMSDeliveryException, SMSVerifyException, SMSBalanceException {
         Smsc smsc = new Smsc(login, password);
 
         String[] retSend = smsc.send_sms(phoneNumber.substring(1), "Ваш пароль: " + code, 0, "", "", 0, "", "");
@@ -29,5 +29,7 @@ public class SMSPhoneVerifyService implements PhoneVerifyServiceSMS{
         if (Math.round(Double.parseDouble(retBalance)) < 10){throw new SMSBalanceException();}
 
         if (!retStatus[2].equals("200")){throw new SMSDeliveryException();}
+
+        return true;
     }
 }

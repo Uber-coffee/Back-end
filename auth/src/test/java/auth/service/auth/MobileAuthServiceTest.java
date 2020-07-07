@@ -73,7 +73,7 @@ class MobileAuthServiceTest {
 
     public void initPhoneVerifyServiceSMS() throws SMSVerifyException, SMSDeliveryException, SMSBalanceException {
         phoneVerifyServiceSMS = mock(PhoneVerifyServiceSMS.class);
-        phoneVerifyServiceSMS.sendVerifyMessage("+79004443322", "1488");
+        when(phoneVerifyServiceSMS.sendVerifyMessage("+79004443322", "1488"));
     }
 
     public void initAuthenticationManager() {

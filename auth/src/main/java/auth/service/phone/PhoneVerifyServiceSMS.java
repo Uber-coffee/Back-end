@@ -5,5 +5,5 @@ import auth.exception.SMSDeliveryException;
 import auth.exception.SMSVerifyException;
 
 public interface PhoneVerifyServiceSMS {
-    void sendVerifyMessage(String phoneNumber, String code) throws SMSDeliveryException, SMSVerifyException, SMSBalanceException;
+    boolean sendVerifyMessage(String phoneNumber, String code) throws SMSDeliveryException, SMSVerifyException, SMSBalanceException;
 }

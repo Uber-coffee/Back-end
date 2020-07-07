@@ -73,9 +73,10 @@ public class MobileAuthService {
         final String phoneNumber = phoneVerifyService.verifyToken(mobileSignupRequest.getIdToken());
         final String regCode = generateCodeForService();
 
+        boolean smsResult = false;
 
         try {
-            phoneVerifyServiceSMS.sendVerifyMessage(phoneNumber, regCode);
+            smsResult = phoneVerifyServiceSMS.sendVerifyMessage(phoneNumber, regCode);
         }catch (SMSVerifyException e){
             log.warn("SMS code was not sent!");
         }catch (SMSDeliveryException e){
@@ -83,6 +84,7 @@ public class MobileAuthService {
         }catch (SMSBalanceException e){
             log.warn("Your account is running out of MAHNEY");
         }
+
 
 
         if (customerRepository.existsByPhoneNumber(phoneNumber)) {
