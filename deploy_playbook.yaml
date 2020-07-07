@@ -14,7 +14,7 @@
     - name: deploy to docker swarm
       docker_swarm_service:
         name: auth
-        image: "registry/auth:{{ lookup('env', 'BUILD_ID' }}"
+        image: "registry/auth:{{ lookup('env', 'BUILD_ID') }}"
         networks:
           - name: "net_dev"
         env:
