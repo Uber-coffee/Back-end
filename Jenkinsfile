@@ -13,7 +13,7 @@ node {
 
     stage('Job started notification') {
         telegramSend(
-                message: "Build ${env.BRANCH_NAME} started.",
+                message: "Build ${env.BRANCH_NAME} started. Build id: ${env.BUILD_ID}",
                 chatId: -1001336690990
         )
     }
