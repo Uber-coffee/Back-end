@@ -4,7 +4,6 @@
   become: yes
   vars:
     service_name: 'auth'
-    service_already_exists: 'no'
 
   vars_files: /home/secrets/dev_postgres_password
   tasks:
@@ -17,7 +16,6 @@
         source: local
 
     - name: deploy to docker swarm (create)
-      when: service_already_exists == 'no'
       docker_swarm_service:
         name: "{{ service_name }}"
         image: "localhost:5000/{{ service_name }}:{{ lookup('env', 'BUILD_ID') }}"
