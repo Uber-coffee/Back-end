@@ -10,7 +10,7 @@
   tasks:
     - name: push image to registry
       docker_image:
-        name: {{ service_name }}
+        name: "{{ service_name }}"
         repository: registry:443
         tag: "{{ lookup('env', 'BUILD_ID') }}"
         push: yes
@@ -19,7 +19,7 @@
     - name: deploy to docker swarm (create)
       when: service_already_exists == 'no'
       docker_swarm_service:
-        name: {{ service_name }}
+        name: "{{ service_name }}"
         image: "localhost:5000/{{ service_name }}:{{ lookup('env', 'BUILD_ID') }}"
         networks:
           - name: "net_dev"
