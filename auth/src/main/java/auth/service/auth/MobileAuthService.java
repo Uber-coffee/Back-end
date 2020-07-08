@@ -1,24 +1,38 @@
 package auth.service.auth;
 
+import auth.entity.AuthCode;
+import auth.entity.AuthSession;
 import auth.entity.Customer;
 import auth.exception.*;
+import auth.exception.handle.ExceptionsSMS.SMSDeliveryException;
+import auth.exception.handle.ExceptionsSMS.SMSVerifyException;
 import auth.payload.MobileSignupRequest;
+import auth.repository.AuthCodeRepository;
+import auth.repository.AuthSessionRepository;
 import auth.repository.CustomerRepository;
 import auth.security.token.AccessTokenProvider;
 import auth.security.token.RefreshTokenProvider;
 import auth.service.phone.PhoneVerifyService;
 import auth.service.phone.PhoneVerifyServiceSMS;
+import org.joda.time.DateTime;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class MobileAuthService {
@@ -39,17 +53,36 @@ public class MobileAuthService {
 
     private final CustomerRepository customerRepository;
 
+    private final AuthSessionRepository authSessionRepository;
+
+    private final AuthCodeRepository authCodeRepository;
+
+    @Value(value = "${application.smsc.session_keep_alive}")
+    private Integer AuthSessionExpirationTime;
+
+    @Value(value = "${application.smsc.code_keep_alive}")
+    private Integer AuthCodeExpirationTime;
+
+    @Value(value = "${application.smsc.sessions_per_phone}")
+    private Integer AuthSessionsPerPhone;
+
+    @Value(value = "${application.smsc.codes_per_session}")
+    private Integer AuthCodesPerSession;
+
     public MobileAuthService(@Qualifier("dummyPhoneVerifyService") PhoneVerifyService phoneVerifyService,
                              @Qualifier("SMSPhoneVerifyService") PhoneVerifyServiceSMS phoneVerifyServiceSMS,
                              @Qualifier("mobileAuthenticationManagerBean") AuthenticationManager authenticationManager,
                              AccessTokenProvider accessTokenProvider,
-                             RefreshTokenProvider refreshTokenProvider, CustomerRepository customerRepository) {
+                             RefreshTokenProvider refreshTokenProvider, CustomerRepository customerRepository,
+                             AuthSessionRepository authSessionRepository, AuthCodeRepository authCodeRepository) {
         this.phoneVerifyService = phoneVerifyService;
         this.phoneVerifyServiceSMS = phoneVerifyServiceSMS;
         this.authenticationManager = authenticationManager;
         this.accessTokenProvider = accessTokenProvider;
         this.refreshTokenProvider = refreshTokenProvider;
         this.customerRepository = customerRepository;
+        this.authSessionRepository = authSessionRepository;
+        this.authCodeRepository = authCodeRepository;
         mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
     }
 
@@ -70,42 +103,115 @@ public class MobileAuthService {
     public void signup(MobileSignupRequest mobileSignupRequest, HttpServletResponse httpServletResponse)
             throws TokenException, UserAlreadyExistException {
 
-        final String phoneNumber = phoneVerifyService.verifyToken(mobileSignupRequest.getIdToken());
-        final String regCode = generateCodeForService();
-
-        boolean smsResult = false;
-
-        try {
-            smsResult = phoneVerifyServiceSMS.sendVerifyMessage(phoneNumber, regCode);
-        }catch (SMSVerifyException e){
-            log.warn("SMS code was not sent!");
-        }catch (SMSDeliveryException e){
-            log.warn("SMS was not delivered!");
-        }catch (SMSBalanceException e){
-            log.warn("Your account is running out of MAHNEY");
-        }
-
-        if (smsResult){
-            //TODO add to repository of current sessions
-        }
+        final String phoneNumber = phoneVerifyService.verifyToken(mobileSignupRequest.getPhoneNumber());
 
         if (customerRepository.existsByPhoneNumber(phoneNumber)) {
             throw new UserAlreadyExistException();
         }
 
-        Customer customer = mapper.map(mobileSignupRequest, Customer.class);
-        customer.setPhoneNumber(phoneNumber);
-        customerRepository.save(customer);
+        if (authSessionRepository.findByPhoneNumber(phoneNumber).size() < 1){
+            initiateRegistrationSession(httpServletResponse, phoneNumber);
 
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                phoneNumber,
-                ""
-        ));
+        } else {
+            AuthSession buffer = authSessionRepository.findBySessionId(mobileSignupRequest.getSessionID());
 
-        final String accessToken = accessTokenProvider.createToken(auth);
-        final String refreshToken = refreshTokenProvider.createToken(auth);
-        accessTokenProvider.writeTokenToResponse(accessToken, httpServletResponse);
-        refreshTokenProvider.writeTokenToResponse(refreshToken, httpServletResponse);
+            if (buffer == null){
+                throw new BadCredentialsException("You are supposed to send session_id, aren't you");
+            } else {
+                if(buffer.getPhoneNumber().equals(phoneNumber)){
+                    initiateValidationSession(buffer, httpServletResponse, mobileSignupRequest);
+
+                }else{
+                    //TODO make a right interpretation
+                    throw new IllegalStateException();
+                }
+            }
+        }
+    }
+
+    private void initiateValidationSession(AuthSession authSession, HttpServletResponse httpServletResponse, MobileSignupRequest mobileSignupRequest) {
+        List<AuthSession> authSessionList = authSessionRepository.findByPhoneNumber(authSession.getPhoneNumber());
+
+        if (authSessionList.stream().filter(this::isAuthSessionValid).count() < this.AuthSessionsPerPhone){
+            List<AuthSession> validAuthSessionList = authSessionList.stream().filter(this::isAuthSessionValid).collect(Collectors.toList());
+            System.out.println(validAuthSessionList.toString());
+
+            List<AuthCode> codes = validAuthSessionList.stream().map(AuthSession::getAuthCodes).flatMap(Collection::stream).collect(Collectors.toList());
+            System.out.println(codes.toString());
+
+            boolean codeCheck = initiateCodeCheck(authSession, httpServletResponse, validAuthSessionList, codes, mobileSignupRequest);
+
+            if (!codeCheck){
+                initiateExtraMessageSession(authSession, httpServletResponse, authSession.getPhoneNumber(), mobileSignupRequest);
+            }
+        } else {
+            System.out.println("Too many sessions for this customer");
+        }
+    }
+
+    private boolean initiateCodeCheck(AuthSession authSession, HttpServletResponse httpServletResponse, List<AuthSession> validAuthSessionList, List<AuthCode> codes, MobileSignupRequest mobileSignupRequest) {
+
+        for (AuthSession session: validAuthSessionList) {
+            for (AuthCode authcode: codes) {
+                if ((session.getSessionId() == authSession.getSessionId())
+                        && (authcode.getSmsCode().equals(mobileSignupRequest.getVerifyCode()))){
+                    if (isAuthCodeValid(authcode)){
+                        Customer customer = new Customer();
+                        customer.setPhoneNumber(authSession.getPhoneNumber());
+                        customerRepository.save(customer);
+
+                        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                                authSession.getPhoneNumber(),
+                                ""
+                        ));
+
+                        final String accessToken = accessTokenProvider.createToken(auth);
+                        final String refreshToken = refreshTokenProvider.createToken(auth);
+
+                        accessTokenProvider.writeTokenToResponse(accessToken, httpServletResponse);
+                        refreshTokenProvider.writeTokenToResponse(refreshToken, httpServletResponse);
+
+                       return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private void initiateExtraMessageSession(AuthSession authSession, HttpServletResponse httpServletResponse, String phoneNumber, MobileSignupRequest mobileSignupRequest) {
+        if (authSessionRepository.countByPhoneNumber(mobileSignupRequest.getPhoneNumber()) < this.AuthSessionsPerPhone){
+            if (authCodeRepository.countBySession(authSession) < this.AuthCodesPerSession){
+                final String regCode = generateCodeForService();
+
+                AuthCode authCode = new AuthCode(regCode, authSession);
+                authCode.setRegistrationDate();
+                System.out.println(authCode.getRegistrationDate());
+                authCodeRepository.save(authCode);
+
+                httpServletResponse.addHeader("session_id", mobileSignupRequest.getSessionID().toString());
+            } else {
+                initiateRegistrationSession(httpServletResponse, phoneNumber);
+            }
+        } else {
+            throw new SessionAuthenticationException("Too many sessions for single customer");
+        }
+    }
+
+    private void initiateRegistrationSession(HttpServletResponse httpServletResponse, String phoneNumber) {
+        final String regCode = generateCodeForService();
+        final UUID currentSessionID = UUID.randomUUID();
+
+        boolean smsResult = sendMessage(phoneNumber, regCode);
+
+        if (smsResult) {
+            System.out.println(currentSessionID.toString());
+
+            AuthSession authSession = new AuthSession(currentSessionID, phoneNumber);
+
+            saveNewAuthCodeWithNewSession(regCode, authSession);
+            httpServletResponse.addHeader("session_id", currentSessionID.toString());
+        }
     }
 
     private static String generateCodeForService(){
@@ -120,5 +226,36 @@ public class MobileAuthService {
         }
 
         return result;
+    }
+
+    private boolean isAuthSessionValid(AuthSession authSession){
+        return authSession.getRegistrationDate().plusSeconds(this.AuthSessionExpirationTime).isAfter(DateTime.now());
+    }
+
+    private boolean isAuthCodeValid(AuthCode authCode){
+        return authCode.getRegistrationDate().plusSeconds(this.AuthCodeExpirationTime).isAfter(DateTime.now());
+    }
+
+    private void saveNewAuthCodeWithNewSession(String regCode, AuthSession authSession){
+
+        //System.out.println(authSession.toString());
+        AuthCode authCode = new AuthCode(regCode, authSession);
+        //System.out.println(authCode.toString());
+        authSession.getAuthCodes().add(authCode);
+
+        this.authSessionRepository.save(authSession);
+        this.authCodeRepository.save(authCode);
+    }
+
+    private boolean sendMessage(String phoneNumber, String regCode){
+        boolean smsResult = false;
+        try {
+            smsResult = this.phoneVerifyServiceSMS.sendVerifyMessage(phoneNumber, regCode);
+        }catch (SMSVerifyException e){
+            log.warn("SMS code was not sent!");
+        }catch (SMSDeliveryException e){
+            log.warn("SMS was not delivered!");
+        }
+        return smsResult;
     }
 }

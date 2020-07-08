@@ -9,8 +9,7 @@ import org.joda.time.DateTime;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "authcodes", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "session_id")})
+@Table(name = "authcodes")
 @Data
 @NoArgsConstructor
 public class AuthCode {
@@ -25,11 +24,27 @@ public class AuthCode {
     @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime registrationDate;
 
-    @Column(name = "session_id", nullable = false)
-    private String sessionId;
+    @ManyToOne
+    @JoinColumn (name = "session_FK", nullable = false)
+    private AuthSession session;
 
     @PrePersist
     public void setRegistrationDate(){
         registrationDate = DateTime.now();
+    }
+
+    public AuthCode( String smsCode, AuthSession authSession){
+        this.session = authSession;
+        this.smsCode = smsCode;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthCode{" +
+                "id=" + id +
+                ", smsCode='" + smsCode + '\'' +
+                ", registrationDate=" + registrationDate +
+                ", session=" + session.getSessionId() +
+                '}';
     }
 }

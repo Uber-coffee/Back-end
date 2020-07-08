@@ -3,8 +3,6 @@ package auth.service.smsc;
  * SMSC.RU API (smsc.ru) версия 1.3 (03.07.2019) smsc's sms sender package
 */
 
-
-
 import java.net.*;
 import java.io.*;
 import java.lang.Math;

@@ -39,4 +39,10 @@ public class CommonAuthController {
     public void logout(HttpServletRequest httpServletRequest) throws TokenException {
         commonAuthService.logout(httpServletRequest);
     }
+
+    @SwaggerMethodToDocument
+    @RequestMapping(value = "/validate")
+    @ApiOperation(value = "Validate your token")
+    public void validateToken(HttpServletRequest httpServletRequest) throws TokenException{
+    }
 }

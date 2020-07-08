@@ -6,19 +6,19 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Table(name = "authcodes", uniqueConstraints = {
+@Table(name = "authsessions", uniqueConstraints = {
         @UniqueConstraint(columnNames = "session_id")})
 @Data
 @NoArgsConstructor
 public class AuthSession {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "session_id", nullable = false)
-    private String sessionId;
+    @Column(name = "session_id")
+    private UUID sessionId;
 
     @Column (name = "phone_number", nullable = false)
     private String phoneNumber;
@@ -30,5 +30,13 @@ public class AuthSession {
     @PrePersist
     public void setRegistrationDate(){
         registrationDate = DateTime.now();
+    }
+
+    @OneToMany(mappedBy = "session")
+    private List<AuthCode> authCodes = new ArrayList<>();
+
+    public AuthSession(UUID uuid, String phoneNumber){
+        this.sessionId = uuid;
+        this.phoneNumber = phoneNumber;
     }
 }
