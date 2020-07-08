@@ -11,7 +11,7 @@
     - name: push image to registry
       docker_image:
         name: "{{ service_name }}"
-        repository: registry:443
+        repository: "registry:443/{{ service_name }}"
         tag: "{{ lookup('env', 'BUILD_ID') }}"
         push: yes
         source: local
