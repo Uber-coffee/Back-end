@@ -28,6 +28,3 @@
           AUTH_DB_USER: "dev"
           AUTH_DB_PSWD: "{{ dev_db_password }}"
 #         some env variables are skipped because they are not needed for test/qa, should be set for production
-        secrets:
-          - secret_name: postgres_dev_password
-            filename: "/run/secrets/postgres_password"
