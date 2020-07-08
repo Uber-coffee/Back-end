@@ -40,7 +40,7 @@ node {
     }
 
     stage('Push to registry and deploy (playbook)') {
-        ansiblePlaybook playbook: 'deploy_playbook.yaml'
+        ansiblePlaybook playbook: 'deploy_playbook.yaml', vaultCredentialsId: 'ansible_vault_password'
     }
 
     stage('Job success notification') {
