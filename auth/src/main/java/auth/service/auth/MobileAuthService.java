@@ -100,14 +100,9 @@ public class MobileAuthService {
     }
 
     public void signup(MobileSignupRequest mobileSignupRequest, HttpServletResponse httpServletResponse)
-            throws TokenException, UserAlreadyExistException, IOException {
+            throws TokenException, IOException {
 
         final String phoneNumber = phoneVerifyService.verifyToken(mobileSignupRequest.getPhoneNumber());
-
-        if (customerRepository.existsByPhoneNumber(phoneNumber)) {
-            httpServletResponse.sendError(400);
-            throw new UserAlreadyExistException();
-        }
 
         if (authSessionRepository.findByPhoneNumber(phoneNumber).size() < 1){
             initiateRegistrationSession(httpServletResponse, phoneNumber);
@@ -162,28 +157,38 @@ public class MobileAuthService {
                 if ((session.getSessionId() == authSession.getSessionId())
                         && (authcode.getSmsCode().equals(mobileSignupRequest.getVerifyCode()))){
                     if (isAuthCodeValid(authcode)){
-                        Customer customer = new Customer();
-                        customer.setPhoneNumber(authSession.getPhoneNumber());
-                        customerRepository.save(customer);
 
-                        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                                authSession.getPhoneNumber(),
-                                ""
-                        ));
+                        if (customerRepository.existsByPhoneNumber(authSession.getPhoneNumber())){
+                            getAuthTokens(authSession, httpServletResponse);
+                            httpServletResponse.setStatus(202);
 
-                        final String accessToken = accessTokenProvider.createToken(auth);
-                        final String refreshToken = refreshTokenProvider.createToken(auth);
+                        }else {
+                            Customer customer = new Customer();
+                            customer.setPhoneNumber(authSession.getPhoneNumber());
+                            customerRepository.save(customer);
 
-                        httpServletResponse.setStatus(201);
-                        accessTokenProvider.writeTokenToResponse(accessToken, httpServletResponse);
-                        refreshTokenProvider.writeTokenToResponse(refreshToken, httpServletResponse);
-
-                       return true;
+                            getAuthTokens(authSession, httpServletResponse);
+                            httpServletResponse.setStatus(201);
+                        }
+                        return true;
                     }
                 }
             }
         }
         return false;
+    }
+
+    private void getAuthTokens(AuthSession authSession, HttpServletResponse httpServletResponse) {
+        Authentication auth = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                authSession.getPhoneNumber(),
+                ""
+        ));
+
+        final String accessToken = this.accessTokenProvider.createToken(auth);
+        final String refreshToken = this.refreshTokenProvider.createToken(auth);
+
+        this.accessTokenProvider.writeTokenToResponse(accessToken, httpServletResponse);
+        this.refreshTokenProvider.writeTokenToResponse(refreshToken, httpServletResponse);
     }
 
     private void initiateExtraMessageSession(AuthSession authSession, HttpServletResponse httpServletResponse, String phoneNumber, MobileSignupRequest mobileSignupRequest) throws IOException {
