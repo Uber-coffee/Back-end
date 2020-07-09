@@ -1,0 +1,25 @@
+server:
+  port: 8002
+logging:
+  level:
+    auth.service: DEBUG
+spring:
+  application:
+    name: auth-service
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    url: ${AUTH_DB_URI:jdbc:postgresql://localhost:5432/}
+    username: ${AUTH_DB_USER:postgres}
+    password: ${AUTH_DB_PSWD:rootroot}
+    driver-class-name: org.postgresql.Driver
+  main:
+    allow-bean-definition-overriding: true
