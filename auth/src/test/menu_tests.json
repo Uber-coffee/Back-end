@@ -1,0 +1,786 @@
+{
+	"info": {
+		"_postman_id": "7c0260fb-8056-4ecf-85fb-4a5f19bf43eb",
+		"name": "Menu Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Component Test",
+			"item": [
+				{
+					"name": "Add component",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "63f8675f-6e96-4139-8674-d6cc66a79912",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Parameters check\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.myClass.name).to.eql(\"milk\");\r",
+									"    pm.expect(jsonData.myClass.isSingle).to.eql(false);\r",
+									"    pm.expect(jsonData.myClass.isRequired).to.eql(true);\r",
+									"    pm.expect(jsonData.name).to.eql(\"cow's milk\");\r",
+									"    pm.expect(jsonData.measure).to.eql(\"ML\");\r",
+									"    pm.expect(jsonData.id).not.eql(null);\r",
+									"    pm.expect(jsonData.myClass.id).not.eql(null);\r",
+									"  \r",
+									"    pm.environment.set(\"ID\", jsonData.id);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"myClass\": {\n\t\t\"name\":\"milk\",\n\t\t\"isSingle\":\"false\",\n\t\t\"isRequired\":\"true\"\n     },\n\t \"name\":\"cow's milk\",\n\t \"measure\":\"ML\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/w/components",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"w",
+								"components"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit component",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "80c472d8-7d5b-4a05-b4fc-e6ee4035cdd6",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Parameters check\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.myClass.name).to.eql(\"coffee\");\r",
+									"    pm.expect(jsonData.myClass.isSingle).to.eql(false);\r",
+									"    pm.expect(jsonData.myClass.isRequired).to.eql(true);\r",
+									"    pm.expect(jsonData.name).to.eql(\"arabica\");\r",
+									"    pm.expect(jsonData.measure).to.eql(\"GR\");\r",
+									"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"ID\"));\r",
+									"    pm.expect(jsonData.myClass.id).to.eql(pm.environment.get(\"ID\"));\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{ID}},\r\n\t\"myClass\": {\r\n        \"id\": {{ID}},\r\n\t\t\"name\":\"coffee\",\r\n\t\t\"isSingle\":\"false\",\r\n\t\t\"isRequired\":\"true\"\r\n     },\r\n\t \"name\":\"arabica\",\r\n\t \"measure\":\"GR\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/w/components",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"w",
+								"components"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get components",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3e92c865-98b0-472a-a6ef-89cc7fffe560",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Parametrs check\", function () {\r",
+									"    console.log(pm.response.json());\r",
+									"    const id = pm.environment.get(\"ID\");\r",
+									"    var jsonData = pm.response.json().find( component => {\r",
+									"        return component.id == id\r",
+									"    });\r",
+									"    pm.expect(jsonData.myClass.name).to.eql(\"coffee\");\r",
+									"    pm.expect(jsonData.myClass.isSingle).to.eql(false);\r",
+									"    pm.expect(jsonData.myClass.isRequired).to.eql(true);\r",
+									"    pm.expect(jsonData.name).to.eql(\"arabica\");\r",
+									"    pm.expect(jsonData.measure).to.eql(\"GR\");\r",
+									"    pm.expect(jsonData.id).to.eql(id);\r",
+									"    pm.expect(jsonData.myClass.id).to.eql(id);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/w/components",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"w",
+								"components"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get component",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ce6a0a21-94f4-4df3-ab86-5e7447ae93c7",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Parametrs check\", function () {\r",
+									"    const id = pm.environment.get(\"ID\");\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.myClass.name).to.eql(\"coffee\");\r",
+									"    pm.expect(jsonData.myClass.isSingle).to.eql(false);\r",
+									"    pm.expect(jsonData.myClass.isRequired).to.eql(true);\r",
+									"    pm.expect(jsonData.name).to.eql(\"arabica\");\r",
+									"    pm.expect(jsonData.measure).to.eql(\"GR\");\r",
+									"    pm.expect(jsonData.id).to.eql(id);\r",
+									"    pm.expect(jsonData.myClass.id).to.eql(id);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/w/components/{{ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"w",
+								"components",
+								"{{ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete component",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "40cc9ce2-edde-466c-9652-e5082d5a6e31",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/w/components/{{ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"w",
+								"components",
+								"{{ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete nonexistent component",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "43914e22-69b6-4ee9-9c70-642eaed85db4",
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/w/components/{{ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"w",
+								"components",
+								"{{ID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "You must store tests with component here!",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Beverage Tests",
+			"item": [
+				{
+					"name": "Add Beverage",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a87a6971-bc08-453f-8f46-ce4875da7007",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Components test\", function () {\r",
+									"    function checkComponent(newComponent, component) {\r",
+									"        pm.expect(newComponent.component.myClass.name).to.eql(component.myClass.name);\r",
+									"        pm.expect(newComponent.component.myClass.isSingle).to.eql(component.myClass.isSingle);\r",
+									"        pm.expect(newComponent.component.myClass.isRequired).to.eql(component.myClass.isRequired);\r",
+									"        pm.expect(newComponent.component.name).to.eql(component.name);\r",
+									"        pm.expect(newComponent.component.measure).to.eql(component.measure);\r",
+									"        pm.expect(newComponent.component.id).to.eql(component.id);\r",
+									"        pm.expect(newComponent.component.myClass.id).to.eql(component.id);\r",
+									"    }\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var newComponent = jsonData.recipe.pop();\r",
+									"    var component = JSON.parse(pm.environment.get(\"COMPONENT3\"));\r",
+									"\r",
+									"    checkComponent(newComponent, component);\r",
+									"    pm.expect(newComponent.quantity).to.eql(1);\r",
+									"\r",
+									"    newComponent = jsonData.recipe.pop();\r",
+									"    component = JSON.parse(pm.environment.get(\"COMPONENT2\"));\r",
+									"\r",
+									"    checkComponent(newComponent, component);\r",
+									"    pm.expect(newComponent.quantity).to.eql(50);\r",
+									"\r",
+									"    newComponent = jsonData.recipe.pop();\r",
+									"    component = JSON.parse(pm.environment.get(\"COMPONENT\"));\r",
+									"\r",
+									"    checkComponent(newComponent, component);\r",
+									"    pm.expect(newComponent.quantity).to.eql(100);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Beverage parameters check\", function () {\r",
+									"    var beverage = pm.response.json();\r",
+									"    pm.expect(beverage.beverageName).to.eql(\"Espresso with milk\");\r",
+									"    pm.expect(beverage.price).to.eql(200);\r",
+									"    pm.expect(beverage.customerId).to.eql(null);\r",
+									"    pm.expect(beverage.id).not.eql(null);\r",
+									"\r",
+									"    console.log(beverage.id);\r",
+									"    pm.environment.set(\"ID\", beverage.id);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1f44d866-3683-4c67-a605-781697a73dfe",
+								"exec": [
+									"var component = {\r",
+									"    \"myClass\": {\r",
+									"\t\t\"name\":\"milk\",\r",
+									"\t\t\"isSingle\":\"false\",\r",
+									"\t\t\"isRequired\":\"true\"\r",
+									"     },\r",
+									"\t \"name\":\"cow's milk\",\r",
+									"\t \"measure\":\"ML\"\r",
+									"}\r",
+									"\r",
+									"var request = {\r",
+									"    url: \"http://localhost:8000/w/components\",\r",
+									"    method: \"POST\",\r",
+									"    header: {\r",
+									"        \"content-type\": \"application/json\",\r",
+									"        \"accept\": \"application/json\",\r",
+									"        \"authorization\": \"Bearer \" + pm.globals.get(\"ACCESS_TOKEN\")\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(component)\r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"pm.sendRequest(request,\r",
+									"function (err, response) {\r",
+									"    const component = response.json();\r",
+									"    pm.environment.set('COMPONENT', JSON.stringify(component));\r",
+									"    console.log(component);\r",
+									"});\r",
+									"\r",
+									"component = {\r",
+									"    \"myClass\": {\r",
+									"\t\t\"name\":\"coffee\",\r",
+									"\t\t\"isSingle\":\"false\",\r",
+									"\t\t\"isRequired\":\"true\"\r",
+									"     },\r",
+									"\t \"name\":\"arabic\",\r",
+									"\t \"measure\":\"GR\"\r",
+									"}\r",
+									"request.body.raw = JSON.stringify(component);\r",
+									"\r",
+									"pm.sendRequest(request,\r",
+									"function (err, response) {\r",
+									"    const component = response.json();\r",
+									"    pm.environment.set('COMPONENT2', JSON.stringify(component));\r",
+									"    console.log(component);\r",
+									"});\r",
+									"\r",
+									"component = {\r",
+									"    \"myClass\": {\r",
+									"\t\t\"name\":\"cup\",\r",
+									"\t\t\"isSingle\":\"true\",\r",
+									"\t\t\"isRequired\":\"true\"\r",
+									"     },\r",
+									"\t \"name\":\"cup 0.2\",\r",
+									"\t \"measure\":\"PIECE\"\r",
+									"}\r",
+									"request.body.raw = JSON.stringify(component);\r",
+									"\r",
+									"pm.sendRequest(request,\r",
+									"function (err, response) {\r",
+									"    const component = response.json();\r",
+									"    pm.environment.set('COMPONENT3', JSON.stringify(component));\r",
+									"    console.log(component);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"beverageName\": \"Espresso with milk\",\r\n    \"recipe\": [\r\n        {\r\n        \"component\": {{COMPONENT}},\r\n        \"quantity\": 100\r\n        },\r\n        {\r\n        \"component\": {{COMPONENT2}},\r\n        \"quantity\": 50\r\n        },\r\n        {\r\n        \"component\": {{COMPONENT3}},\r\n        \"quantity\": 1\r\n        }\r\n    ],\r\n    \"price\": 200\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/w/beverages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"w",
+								"beverages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Beverage",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2d28a729-5ad3-456a-b5fb-ae43726de3f6",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Components test\", function () {\r",
+									"    function checkComponent(newComponent, component) {\r",
+									"        pm.expect(newComponent.component.myClass.name).to.eql(component.myClass.name);\r",
+									"        pm.expect(newComponent.component.myClass.isSingle).to.eql(component.myClass.isSingle);\r",
+									"        pm.expect(newComponent.component.myClass.isRequired).to.eql(component.myClass.isRequired);\r",
+									"        pm.expect(newComponent.component.name).to.eql(component.name);\r",
+									"        pm.expect(newComponent.component.measure).to.eql(component.measure);\r",
+									"        pm.expect(newComponent.component.id).to.eql(component.id);\r",
+									"        pm.expect(newComponent.component.myClass.id).to.eql(component.id);\r",
+									"    }\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var component = JSON.parse(pm.environment.get(\"COMPONENT3\"));\r",
+									"    var newComponent = jsonData.recipe.find( recipeComponent => {\r",
+									"        return recipeComponent.component.name == component.name; \r",
+									"    });;\r",
+									"    \r",
+									"\r",
+									"    checkComponent(newComponent, component);\r",
+									"    pm.expect(newComponent.quantity).to.eql(1);\r",
+									"\r",
+									"    component = JSON.parse(pm.environment.get(\"COMPONENT2\"));\r",
+									"    newComponent = jsonData.recipe.find( recipeComponent => {\r",
+									"        return recipeComponent.component.name == component.name; \r",
+									"    });\r",
+									"\r",
+									"    checkComponent(newComponent, component);\r",
+									"    pm.expect(newComponent.quantity).to.eql(50);\r",
+									"\r",
+									"    component = JSON.parse(pm.environment.get(\"COMPONENT\"));\r",
+									"    newComponent = jsonData.recipe.find( recipeComponent => {\r",
+									"        return recipeComponent.component.name == component.name; \r",
+									"    });\r",
+									"\r",
+									"    checkComponent(newComponent, component);\r",
+									"    pm.expect(newComponent.quantity).to.eql(100);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Beverage parameters check\", function () {\r",
+									"    var beverage = pm.response.json();\r",
+									"    pm.expect(beverage.beverageName).to.eql(\"Espresso with milk\");\r",
+									"    pm.expect(beverage.price).to.eql(200);\r",
+									"    pm.expect(beverage.customerId).to.eql(null);\r",
+									"    pm.expect(beverage.id).to.eql(pm.environment.get(\"ID\"));\r",
+									"\r",
+									"    console.log(beverage.id);\r",
+									"    pm.environment.set(\"ID\", beverage.id);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/w/beverages/{{ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"w",
+								"beverages",
+								"{{ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Beverage",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "65d91a76-6001-4bf7-8d86-d97b85f958f8",
+								"exec": [
+									"var component = {\r",
+									"    \"myClass\": {\r",
+									"\t\t\"name\":\"cup\",\r",
+									"\t\t\"isSingle\":\"true\",\r",
+									"\t\t\"isRequired\":\"true\"\r",
+									"     },\r",
+									"\t \"name\":\"cup 0.5\",\r",
+									"\t \"measure\":\"PIECE\"\r",
+									"}\r",
+									"\r",
+									"var request = {\r",
+									"    url: \"http://localhost:8000/w/components\",\r",
+									"    method: \"POST\",\r",
+									"    header: {\r",
+									"        \"content-type\": \"application/json\",\r",
+									"        \"accept\": \"application/json\",\r",
+									"        \"authorization\": \"Bearer \" + pm.globals.get(\"ACCESS_TOKEN\")\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(component)\r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"pm.sendRequest(request,\r",
+									"function (err, response) {\r",
+									"    const component = response.json();\r",
+									"    pm.environment.set('COMPONENT3', JSON.stringify(component));\r",
+									"    console.log(component);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "1f043996-39b1-4bcb-a788-b008b77b6423",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Components test\", function () {\r",
+									"    function checkComponent(newComponent, component) {\r",
+									"        pm.expect(newComponent.component.myClass.name).to.eql(component.myClass.name);\r",
+									"        pm.expect(newComponent.component.myClass.isSingle).to.eql(component.myClass.isSingle);\r",
+									"        pm.expect(newComponent.component.myClass.isRequired).to.eql(component.myClass.isRequired);\r",
+									"        pm.expect(newComponent.component.name).to.eql(component.name);\r",
+									"        pm.expect(newComponent.component.measure).to.eql(component.measure);\r",
+									"        pm.expect(newComponent.component.id).to.eql(component.id);\r",
+									"        pm.expect(newComponent.component.myClass.id).to.eql(component.id);\r",
+									"    }\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var newComponent = jsonData.recipe.pop();\r",
+									"    var component = JSON.parse(pm.environment.get(\"COMPONENT3\"));\r",
+									"\r",
+									"    checkComponent(newComponent, component);\r",
+									"    pm.expect(newComponent.quantity).to.eql(1);\r",
+									"\r",
+									"    newComponent = jsonData.recipe.pop();\r",
+									"    component = JSON.parse(pm.environment.get(\"COMPONENT2\"));\r",
+									"\r",
+									"    checkComponent(newComponent, component);\r",
+									"    pm.expect(newComponent.quantity).to.eql(100);\r",
+									"\r",
+									"    newComponent = jsonData.recipe.pop();\r",
+									"    component = JSON.parse(pm.environment.get(\"COMPONENT\"));\r",
+									"\r",
+									"    checkComponent(newComponent, component);\r",
+									"    pm.expect(newComponent.quantity).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Beverage parameters check\", function () {\r",
+									"    var beverage = pm.response.json();\r",
+									"    pm.expect(beverage.beverageName).to.eql(\"Espresso with milk\");\r",
+									"    pm.expect(beverage.price).to.eql(200);\r",
+									"    pm.expect(beverage.customerId).to.eql(null);\r",
+									"    pm.environment.set(\"ID\", beverage.id);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{ID}},\r\n    \"beverageName\": \"Espresso with milk\",\r\n    \"recipe\": [\r\n        {\r\n        \"component\": {{COMPONENT}},\r\n        \"quantity\": 200\r\n        },\r\n        {\r\n        \"component\": {{COMPONENT2}},\r\n        \"quantity\": 100\r\n        },\r\n        {\r\n        \"component\": {{COMPONENT3}},\r\n        \"quantity\": 1\r\n        }\r\n    ],\r\n    \"price\": 200\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/w/beverages",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"w",
+								"beverages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Beverage",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "45064da9-b280-4850-9fae-92e1fe66d20f",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/w/beverages/{{ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"w",
+								"beverages",
+								"{{ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete nonexistent  beverage",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "35c760f4-9291-42eb-9f40-f19a373ad40a",
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/w/beverages/{{ID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"w",
+								"beverages",
+								"{{ID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "You must store tests with beverage here!",
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{ACCESS_TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "2d6dd96e-778c-4346-ac5a-84d3b526bcf6",
+				"type": "text/javascript",
+				"exec": [
+					"pm.sendRequest({",
+					"    url: \"http://localhost:8000/w/auth/login\",",
+					"    method: \"POST\",",
+					"    header: {",
+					"        \"content-type\": \"application/json\",",
+					"        \"accept\": \"application/json\",",
+					"    },",
+					"    body: {",
+					"        mode: 'raw',",
+					"        raw: JSON.stringify({ ",
+					"            email: pm.environment.get(\"USERNAME\"), ",
+					"            password: pm.environment.get(\"PASSWORD\") ",
+					"        })",
+					"    }",
+					"},",
+					"function (err, response) {",
+					"    const access_token = response.headers.get(\"Authorization\");",
+					"    pm.globals.set('ACCESS_TOKEN', access_token.substring(7));",
+					"});",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "d59869ba-b4a8-4042-8670-6a62640930fe",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

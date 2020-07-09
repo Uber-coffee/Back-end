@@ -1,8 +1,13 @@
 package auth.menu.service;
 
 import auth.menu.entity.Beverage;
-import auth.menu.exception.InvalidId;
+import auth.menu.exception.InvalidIdException;
 import auth.menu.repository.BeverageRepository;
+import org.hibernate.Session;
+import org.hibernate.SessionBuilder;
+import org.hibernate.SessionFactory;
+import org.jadira.usertype.spi.jta.HibernateSessionFactoryBean;
+import org.springframework.data.jpa.provider.HibernateUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,24 +24,29 @@ public class BeverageService {
     }
 
     public Beverage addBeverage(Beverage beverage) {
+        if (beverage.getId() != null) {
+            deleteBeverage(beverage.getId());
+        }
+
         beverage.getRecipe().forEach(component -> {
             component.setComponent(componentService.getComponent(component.getComponent().getId()));
             component.setBeverage(beverage);
         });
+
         return beverageRepository.save(beverage);
     }
 
     public List<Beverage> getBeverages() {
-        return (List<Beverage>) beverageRepository.findAll();
+        return beverageRepository.findAll();
     }
 
-    public Beverage getBeverage(Long id) throws InvalidId {
+    public Beverage getBeverage(Long id) throws InvalidIdException {
         Optional<Beverage> beverage = beverageRepository.findById(id);
         if (beverage.isPresent()) {
             return beverage.get();
         }
 
-        throw new InvalidId("There is no beverage with such id");
+        throw new InvalidIdException("There is no beverage with such id");
     }
 
     public void deleteBeverage(Long id) {

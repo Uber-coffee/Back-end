@@ -1,7 +1,7 @@
 package auth.menu.service;
 
 import auth.menu.entity.Component;
-import auth.menu.exception.InvalidId;
+import auth.menu.exception.InvalidIdException;
 import auth.menu.repository.ComponentRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +17,7 @@ public class ComponentService {
     }
 
     public Component addComponent(Component component) {
+        component.getMyClass().setComponent(component);
         return componentRepository.save(component);
     }
 
@@ -24,12 +25,12 @@ public class ComponentService {
         return (List<Component>) componentRepository.findAll();
     }
 
-    public Component getComponent(Long id) throws InvalidId{
+    public Component getComponent(Long id) throws InvalidIdException {
         Optional<Component> component = componentRepository.findById(id);
         if (component.isPresent()) {
             return component.get();
         }
-        throw new InvalidId("There is no component with such id");
+        throw new InvalidIdException("There is no component with such id");
     }
 
     public void deleteComponent(Long id) {

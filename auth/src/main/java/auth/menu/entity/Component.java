@@ -15,17 +15,16 @@ public class Component {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "class_id", nullable = false)
+    @OneToOne(mappedBy = "component", cascade = CascadeType.ALL)
     private Class myClass;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
     private Measure measure;
 
-    @OneToMany(mappedBy = "component")
+    @OneToMany(mappedBy = "component", cascade = CascadeType.MERGE)
     @JsonIgnore
     private List<Recipe> recipe;
 

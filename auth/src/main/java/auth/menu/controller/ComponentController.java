@@ -22,6 +22,11 @@ public class ComponentController {
         return new ResponseEntity<>(componentService.addComponent(component), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Component> getComponent(@PathVariable Long id) {
+        return new ResponseEntity<>(componentService.getComponent(id), HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<Component>> getComponents() {
         return new ResponseEntity<>(componentService.getComponents(), HttpStatus.OK);
