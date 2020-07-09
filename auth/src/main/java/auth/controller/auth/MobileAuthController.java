@@ -37,7 +37,7 @@ public class MobileAuthController {
 
     @SwaggerMethodToDocument
     @PostMapping(value = "/signup")
-    @ApiOperation(value = "Provide first name, Id Token and last name of a customer to sign-up")
+    @ApiOperation(value = "Provide phone, session_Id and verification code")
     public void signup(@Valid @RequestBody MobileSignupRequest mobileSignupRequest,
                        HttpServletResponse httpServletResponse) throws TokenException, UserAlreadyExistException, IOException {
         mobileAuthService.signup(mobileSignupRequest, httpServletResponse);

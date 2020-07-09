@@ -105,6 +105,7 @@ public class MobileAuthService {
         final String phoneNumber = phoneVerifyService.verifyToken(mobileSignupRequest.getPhoneNumber());
 
         if (customerRepository.existsByPhoneNumber(phoneNumber)) {
+            httpServletResponse.sendError(400);
             throw new UserAlreadyExistException();
         }
 
@@ -116,7 +117,7 @@ public class MobileAuthService {
 
             if (buffer == null){
                 httpServletResponse.sendError(406);
-                throw new BadCredentialsException("You are supposed to send session_id, aren't you");
+                throw new BadCredentialsException("You are supposed to send session_id, aren't you?");
             } else {
                 if(buffer.getPhoneNumber().equals(phoneNumber)){
                     initiateValidationSession(buffer, httpServletResponse, mobileSignupRequest);
