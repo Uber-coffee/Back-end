@@ -5,17 +5,20 @@ import trade_point.entity.TradePoint;
 import trade_point.payload.TradePointRequest;
 import trade_point.repository.TradePointRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class TradePointService {
     private final TradePointRepository tradePointRepository;
 
-    TradePointService(TradePointRepository tradePointRepository) {
+    public TradePointService(TradePointRepository tradePointRepository) {
         this.tradePointRepository = tradePointRepository;
     }
 
-    public boolean create(TradePointRequest tradePoint) {
+    public TradePoint create(TradePointRequest tradePoint) {
         if (tradePointRepository.existsByName(tradePoint.getName())) {
-            return false;
+            return null;
         } else {
             TradePoint point = new TradePoint();
 
@@ -26,7 +29,11 @@ public class TradePointService {
             point.setIsActive(true);
 
             tradePointRepository.save(point);
-             return true;
+             return point;
         }
+    }
+
+    public List<TradePoint> allTradePointService () {
+        return tradePointRepository.findAll();
     }
 }

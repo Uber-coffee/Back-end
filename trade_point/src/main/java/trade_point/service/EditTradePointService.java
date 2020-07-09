@@ -31,7 +31,7 @@ public class EditTradePointService {
         this.userRepository = userRepository;
     }
 
-    public ResponseEntity<Object> AddSeller(EditSellerRequest editSellerRequest, TradePoint tradePoint)
+    public ResponseEntity<Object> addSeller(EditSellerRequest editSellerRequest, TradePoint tradePoint)
             throws UserNotFoundException
     {
         if (!userRepository.existsById(editSellerRequest.getIdSeller())) {

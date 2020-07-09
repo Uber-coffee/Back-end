@@ -12,7 +12,7 @@ spring:
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
