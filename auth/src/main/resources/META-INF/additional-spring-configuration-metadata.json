@@ -1,0 +1,83 @@
+{
+  "properties": [
+    {
+      "name": "application.security.accessToken.secret",
+      "type": "java.lang.String",
+      "description": "Access token secret."
+    },
+    {
+      "name": "application.security.accessToken.expire",
+      "type": "java.lang.Long",
+      "description": "Access token expire time in msec."
+    },
+    {
+      "name": "application.security.refreshToken.secret",
+      "type": "java.lang.String",
+      "description": "Refresh token secret."
+    },
+    {
+      "name": "application.security.refreshToken.expire",
+      "type": "java.lang.Long",
+      "description": "Refresh token expire time in msec."
+    },
+    {
+      "name": "application.admin.email",
+      "type": "java.lang.String",
+      "description": "Admin email."
+    },
+    {
+      "name": "application.admin.firstName",
+      "type": "java.lang.String",
+      "description": "Admin first name."
+    },
+    {
+      "name": "application.admin.lastName",
+      "type": "java.lang.String",
+      "description": "Admin last name."
+    },
+    {
+      "name": "application.admin.phoneNumber",
+      "type": "java.lang.String",
+      "description": "Admin phone number."
+    },
+    {
+      "name": "application.admin.password",
+      "type": "java.lang.String",
+      "description": "Admin password."
+    },
+    {
+      "name": "application.firebase.configUri",
+      "type": "java.lang.String",
+      "description": "Firebase config URI."
+    },
+    {
+      "name": "application.smsc.session_keep_alive",
+      "type": "java.lang.Integer",
+      "description": "Time in seconds to keep auth session alive"
+    },
+    {
+      "name": "application.smsc.code_keep_alive",
+      "type": "java.lang.Integer",
+      "description": "Time in seconds to keep auth code alive"
+    },
+    {
+      "name": "application.smsc.sessions_per_phone",
+      "type": "java.lang.Integer",
+      "description": "Amount of sessions avaliable per phone"
+    },
+    {
+      "name": "application.smsc.codes_per_session",
+      "type": "java.lang.Integer",
+      "description": "Amount of auth codes available per session"
+    },
+    {
+      "name": "application.smsc.login",
+      "type": "java.lang.String",
+      "description": "Description for application.smsc.login."
+    },
+    {
+      "name": "application.smsc.password",
+      "type": "java.lang.String",
+      "description": "Description for application.smsc.password."
+    }
+  ] }
