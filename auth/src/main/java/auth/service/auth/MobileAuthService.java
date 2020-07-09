@@ -174,6 +174,7 @@ public class MobileAuthService {
                         final String accessToken = accessTokenProvider.createToken(auth);
                         final String refreshToken = refreshTokenProvider.createToken(auth);
 
+                        httpServletResponse.setStatus(201);
                         accessTokenProvider.writeTokenToResponse(accessToken, httpServletResponse);
                         refreshTokenProvider.writeTokenToResponse(refreshToken, httpServletResponse);
 
