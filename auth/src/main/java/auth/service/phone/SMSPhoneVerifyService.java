@@ -1,10 +1,12 @@
 package auth.service.phone;
 
-import auth.exception.handle.ExceptionsSMS.SMSDeliveryException;
-import auth.exception.handle.ExceptionsSMS.SMSVerifyException;
+import auth.exception.handle.ExceptionsSMS.*;
 import auth.service.smsc.Smsc;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.IllegalFormatException;
+import java.util.zip.DataFormatException;
 
 @Service
 public class SMSPhoneVerifyService implements PhoneVerifyServiceSMS{
@@ -15,24 +17,37 @@ public class SMSPhoneVerifyService implements PhoneVerifyServiceSMS{
 
 
     @Override
-    public boolean sendVerifyMessage(String phoneNumber, String code) throws SMSDeliveryException, SMSVerifyException {
+    public boolean sendVerifyMessage(String phoneNumber, String code) throws SMSParametersException, SMSCredentialsException,
+            SMSBalanceException, SMSServiceOverloadException, SMSDateFormatException, SMSFloodException,
+            SMSForbiddenException, SMSPhoneFormatException, SMSDeliveryDeniedException{
         Smsc smsc = new Smsc(login, password);
-
-        //System.out.println(phoneNumber + "  :  " + code);
 
         String[] retSend = smsc.send_sms(phoneNumber.substring(1), "Ваш пароль: " + code, 0, "", "", 0, "", "");
 
-        if (retSend.length < 3){throw new SMSVerifyException();}
+        String[] retStatus = smsc.get_status(Integer.parseInt(retSend[0]), phoneNumber.substring(1), 1);
 
-        String[] retStatus = smsc.get_status(Integer.parseInt(retSend[0]), phoneNumber.substring(1), 3);
-        String retBalance = smsc.get_balance();
-
-        if (Math.round(Double.parseDouble(retBalance)) < 10){
-            System.out.println("you're running out of MUHNEY");
+        if (!retStatus[2].equals("200")){
+            switch (retSend[1]){
+                case ("-1"):
+                    throw new SMSParametersException();
+                case ("-2"):
+                    throw new SMSCredentialsException();
+                case ("-3"):
+                    throw new SMSBalanceException();
+                case ("-4"):
+                    throw new SMSServiceOverloadException();
+                case ("-5"):
+                    throw new SMSDateFormatException();
+                case ("-6"):
+                    throw new SMSForbiddenException();
+                case ("-7"):
+                    throw new SMSPhoneFormatException();
+                case ("-8"):
+                    throw new SMSDeliveryDeniedException();
+                case ("-9"):
+                    throw new SMSFloodException();
+            }
         }
-
-        if (!retStatus[2].equals("200")){throw new SMSDeliveryException();}
-
         return true;
     }
 }

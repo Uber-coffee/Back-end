@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/m/auth")
@@ -38,7 +39,7 @@ public class MobileAuthController {
     @PostMapping(value = "/signup")
     @ApiOperation(value = "Provide first name, Id Token and last name of a customer to sign-up")
     public void signup(@Valid @RequestBody MobileSignupRequest mobileSignupRequest,
-                       HttpServletResponse httpServletResponse) throws TokenException, UserAlreadyExistException {
+                       HttpServletResponse httpServletResponse) throws TokenException, UserAlreadyExistException, IOException {
         mobileAuthService.signup(mobileSignupRequest, httpServletResponse);
     }
 }

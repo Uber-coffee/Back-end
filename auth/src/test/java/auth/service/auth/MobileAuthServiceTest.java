@@ -3,9 +3,7 @@ package auth.service.auth;
 import auth.entity.Customer;
 import auth.entity.Role;
 import auth.exception.*;
-import auth.exception.handle.ExceptionsSMS.SMSDeliveryException;
-import auth.exception.handle.ExceptionsSMS.SMSVerifyException;
-import auth.payload.MobileSignupRequest;
+import auth.exception.handle.ExceptionsSMS.*;
 import auth.repository.AuthCodeRepository;
 import auth.repository.AuthSessionRepository;
 import auth.repository.CustomerRepository;
@@ -14,8 +12,6 @@ import auth.security.token.RefreshTokenProvider;
 import auth.service.phone.PhoneVerifyService;
 import auth.service.phone.PhoneVerifyServiceSMS;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -58,7 +53,9 @@ class MobileAuthServiceTest {
     private Map<String, Customer> customers;
 
     @BeforeEach
-    public void init() throws TokenException, SMSDeliveryException, SMSVerifyException {
+    public void init() throws TokenException, SMSParametersException, SMSCredentialsException,
+    SMSBalanceException, SMSServiceOverloadException, SMSDateFormatException, SMSFloodException,
+    SMSForbiddenException, SMSPhoneFormatException, SMSDeliveryDeniedException{
         initPhoneVerifyService();
         initAuthenticationManager();
         initAccessTokenProvider();
@@ -85,7 +82,9 @@ class MobileAuthServiceTest {
         when(phoneVerifyService.verifyToken(anyString())).then(i -> i.getArgument(0));
     }
 
-    public void initPhoneVerifyServiceSMS() throws SMSVerifyException, SMSDeliveryException{
+    public void initPhoneVerifyServiceSMS() throws SMSParametersException, SMSCredentialsException,
+            SMSBalanceException, SMSServiceOverloadException, SMSDateFormatException, SMSFloodException,
+            SMSForbiddenException, SMSPhoneFormatException, SMSDeliveryDeniedException {
         phoneVerifyServiceSMS = mock(PhoneVerifyServiceSMS.class);
         when(phoneVerifyServiceSMS.sendVerifyMessage("+79817429496", "1488")).thenReturn(false);
     }

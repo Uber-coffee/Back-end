@@ -1,8 +1,8 @@
 package auth.service.phone;
-
-import auth.exception.handle.ExceptionsSMS.SMSDeliveryException;
-import auth.exception.handle.ExceptionsSMS.SMSVerifyException;
+import auth.exception.handle.ExceptionsSMS.*;
 
 public interface PhoneVerifyServiceSMS {
-    boolean sendVerifyMessage(String phoneNumber, String code) throws SMSDeliveryException, SMSVerifyException;
+    boolean sendVerifyMessage(String phoneNumber, String code) throws SMSParametersException, SMSCredentialsException,
+            SMSForbiddenException, SMSBalanceException, SMSServiceOverloadException, SMSFloodException,
+            SMSDateFormatException, SMSPhoneFormatException, SMSDeliveryDeniedException;
 }
