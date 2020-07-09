@@ -1,7 +1,7 @@
-package menu.controller;
+package auth.menu.controller;
 
-import menu.entity.Component;
-import menu.service.ComponentService;
+import auth.menu.entity.Component;
+import auth.menu.service.ComponentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,12 @@ public class ComponentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Component>> getClasses() {
+    public ResponseEntity<List<Component>> getComponents() {
         return new ResponseEntity<>(componentService.getComponents(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteComponent(@PathVariable Long id) {
+        componentService.deleteComponent(id);
     }
 }

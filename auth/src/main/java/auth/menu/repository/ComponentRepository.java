@@ -1,6 +1,6 @@
-package menu.repository;
+package auth.menu.repository;
 
-import menu.entity.Component;
+import auth.menu.entity.Component;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

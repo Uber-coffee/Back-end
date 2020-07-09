@@ -1,4 +1,4 @@
-package auth.menu;
+package auth.menu.converter;
 
 import auth.menu.entity.Component;
 

@@ -1,7 +1,5 @@
 package auth.menu.entity;
 
-
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,10 +10,10 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-public class RecipeCustomerRelationship {
+public class Beverage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long recipeId;
+    private Long id;
 
     @Column(name = "beverage_name", nullable = false)
     private String beverageName;
@@ -26,6 +24,6 @@ public class RecipeCustomerRelationship {
     @Column(name = "customer_id")
     private Long customerId;
 
-    @OneToMany(mappedBy = "recipeCustomerRelationship", cascade = CascadeType.ALL)
-    private List<Recipe> components = new ArrayList<>();
+    @OneToMany(mappedBy = "beverage", cascade = CascadeType.ALL)
+    private List<Recipe> recipe = new ArrayList<>();
 }

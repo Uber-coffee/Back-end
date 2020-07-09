@@ -1,5 +1,6 @@
-package menu.entity;
+package auth.menu.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,14 +10,20 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 public class Recipe {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    @JsonIgnore
+    private RecipeId recipeId = new RecipeId();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @MapsId("beverageId")
+    @JoinColumn(name = "beverage_id")
+    @JsonIgnore
+    private Beverage beverage;
+
+    @ManyToOne
+    @MapsId("componentId")
     @JoinColumn(name = "component_id")
     private Component component;
 
-    @Column(nullable = false)
     private Long quantity;
 }

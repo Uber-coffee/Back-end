@@ -1,4 +1,4 @@
-package menu.entity;
+package auth.menu.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
