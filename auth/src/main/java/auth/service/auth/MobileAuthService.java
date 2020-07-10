@@ -129,11 +129,9 @@ public class MobileAuthService {
         List<AuthSession> authSessionList = authSessionRepository.findByPhoneNumber(authSession.getPhoneNumber());
 
         if (authSessionList.stream().filter(this::isAuthSessionValid).count() < this.AuthSessionsPerPhone){
-            List<AuthSession> validAuthSessionList = authSessionList.stream().filter(this::isAuthSessionValid).collect(Collectors.toList());
-            System.out.println(validAuthSessionList.toString());
 
+            List<AuthSession> validAuthSessionList = authSessionList.stream().filter(this::isAuthSessionValid).collect(Collectors.toList());
             List<AuthCode> codes = validAuthSessionList.stream().map(AuthSession::getAuthCodes).flatMap(Collection::stream).collect(Collectors.toList());
-            System.out.println(codes.toString());
 
             boolean codeCheck = initiateCodeCheck(authSession, httpServletResponse, validAuthSessionList, codes, mobileSignupRequest);
 
@@ -198,7 +196,6 @@ public class MobileAuthService {
 
                 AuthCode authCode = new AuthCode(regCode, authSession);
                 authCode.setRegistrationDate();
-                System.out.println(authCode.getRegistrationDate());
                 authCodeRepository.save(authCode);
 
                 httpServletResponse.addHeader("session_id", mobileSignupRequest.getSessionID().toString());
@@ -218,8 +215,6 @@ public class MobileAuthService {
         boolean smsResult = sendMessage(phoneNumber, regCode);
 
         if (smsResult) {
-            System.out.println(currentSessionID.toString());
-
             AuthSession authSession = new AuthSession(currentSessionID, phoneNumber);
 
             saveNewAuthCodeWithNewSession(regCode, authSession);

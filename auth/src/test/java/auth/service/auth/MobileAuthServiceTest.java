@@ -4,6 +4,7 @@ import auth.entity.Customer;
 import auth.entity.Role;
 import auth.exception.*;
 import auth.exception.handle.ExceptionsSMS.*;
+import auth.payload.MobileSignupRequest;
 import auth.repository.AuthCodeRepository;
 import auth.repository.AuthSessionRepository;
 import auth.repository.CustomerRepository;
@@ -12,6 +13,8 @@ import auth.security.token.RefreshTokenProvider;
 import auth.service.phone.PhoneVerifyService;
 import auth.service.phone.PhoneVerifyServiceSMS;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -86,7 +90,7 @@ class MobileAuthServiceTest {
             SMSBalanceException, SMSServiceOverloadException, SMSDateFormatException, SMSFloodException,
             SMSForbiddenException, SMSPhoneFormatException, SMSDeliveryDeniedException {
         phoneVerifyServiceSMS = mock(PhoneVerifyServiceSMS.class);
-        when(phoneVerifyServiceSMS.sendVerifyMessage("+79817429496", "1488")).thenReturn(false);
+        when(phoneVerifyServiceSMS.sendVerifyMessage("+79817429496", "9496")).thenReturn(true);
     }
 
     public void initAuthenticationManager() {
@@ -159,33 +163,35 @@ class MobileAuthServiceTest {
     }
 
 
-/*//TODO New tests for sign-up method
+
     @Test
     void login() throws TokenException {
         Customer customer = new Customer();
-        customer.setPhoneNumber("89500190736");
+        customer.setPhoneNumber("8800553535");
         customer.setFirstName("test");
         customer.setLastName("test");
         customerRepository.save(customer);
         HttpServletResponse httpServletResponse = new MockHttpServletResponse();
-        mobileAuthService.login("+79817429496", httpServletResponse);
+        mobileAuthService.login("8800553535", httpServletResponse);
         assertNotNull(httpServletResponse.getHeader("auth"));
         assertNotNull(httpServletResponse.getHeader("ref"));
     }
 
+/*//TODO New tests for sign-up method
     @Test
     void loginException() {
         Customer customer = new Customer();
-        customer.setPhoneNumber("+79817429496");
-        customer.setFirstName("test");
-        customer.setLastName("test");
+        customer.setPhoneNumber("8800553535");
+       // customer.setFirstName("test");
+        //customer.setLastName("test");
         customerRepository.save(customer);
         HttpServletResponse httpServletResponse = new MockHttpServletResponse();
+        UUID uuid = UUID.randomUUID();
         assertThrows(UserAlreadyExistException.class,
                 () -> mobileAuthService.signup(
                         new MobileSignupRequest(
-                                "+79817429496",
-                                "6969",
+                                "8800553535",
+                                "3535",
                                 UUID.randomUUID()),
                         httpServletResponse));
     }
@@ -197,7 +203,5 @@ class MobileAuthServiceTest {
        // assertEquals(1, customers.entrySet().size());
         //assertNotNull(httpServletResponse.getHeader("auth"));
         //assertNotNull(httpServletResponse.getHeader("ref"));
-    }
-
- */
+    }*/
 }

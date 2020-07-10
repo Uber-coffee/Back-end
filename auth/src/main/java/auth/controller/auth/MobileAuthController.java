@@ -39,7 +39,7 @@ public class MobileAuthController {
     @PostMapping(value = "/signup")
     @ApiOperation(value = "Provide phone, session_Id and verification code")
     public void signup(@Valid @RequestBody MobileSignupRequest mobileSignupRequest,
-                       HttpServletResponse httpServletResponse) throws TokenException, UserAlreadyExistException, IOException {
+                       HttpServletResponse httpServletResponse) throws TokenException, IOException {
         mobileAuthService.signup(mobileSignupRequest, httpServletResponse);
     }
 }
