@@ -35,9 +35,9 @@ public class TradePointService {
             TradePointDTO tmp = new TradePointDTO();
             tmp.setPickPoint(p);
 
-            tmp.setDistance(Math.acos(Math.sin(Math.toRadians(p.getLatitude())) * Math.sin(Math.toRadians(latitude)) +
-                            Math.cos(Math.toRadians(p.getLatitude())) * Math.cos(Math.toRadians(latitude)) *
-                                    Math.cos(Math.toRadians(p.getLongitude() - longitude))) * RADIUS);
+            tmp.setDistance(Precision.round(Math.acos(Math.sin(Math.toRadians(p.getLatitude())) * Math.sin(Math.toRadians(latitude)) +
+                                                      Math.cos(Math.toRadians(p.getLatitude())) * Math.cos(Math.toRadians(latitude)) *
+                                                      Math.cos(Math.toRadians(p.getLongitude() - longitude))) * RADIUS, 3));
             tmp.setTime((int) (tmp.getDistance() * 1000 / 90));
 
             result.add(tmp);
