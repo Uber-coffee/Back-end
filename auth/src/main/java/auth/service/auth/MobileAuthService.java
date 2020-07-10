@@ -104,6 +104,8 @@ public class MobileAuthService {
 
         final String phoneNumber = phoneVerifyService.verifyToken(mobileSignupRequest.getPhoneNumber());
 
+
+
         if (authSessionRepository.findByPhoneNumber(phoneNumber).size() < 1){
             initiateRegistrationSession(httpServletResponse, phoneNumber);
 
@@ -209,7 +211,6 @@ public class MobileAuthService {
 
     private void initiateRegistrationSession(HttpServletResponse httpServletResponse, String phoneNumber) throws IOException {
         final String regCode = generateCodeForService(phoneNumber);
-        System.out.println(regCode);
         final UUID currentSessionID = UUID.randomUUID();
 
         boolean smsResult = sendMessage(phoneNumber, regCode);
@@ -262,15 +263,15 @@ public class MobileAuthService {
         boolean smsResult = false;
         try {
             smsResult = this.phoneVerifyServiceSMS.sendVerifyMessage(phoneNumber, regCode);
-        }catch (SMSForbiddenException e){ log.warn("SMS is forbidden!");
-        }catch (SMSParametersException e){ log.warn("SMS not correct!");
-        }catch (SMSBalanceException e){ log.warn("Account is running out of money!");
+        }catch (SMSForbiddenException e){ log.warn("SMS is forbidden! " + phoneNumber);
+        }catch (SMSParametersException e){ log.warn("SMS not correct! " + phoneNumber);
+        }catch (SMSBalanceException e){ log.warn("Account is running out of money!" );
         }catch (SMSServiceOverloadException e){ log.warn("Service is overloaded!");
-        }catch (SMSDateFormatException e){ log.warn("Date format is wrong!");
-        }catch (SMSCredentialsException e){ log.warn("Wrong credentials are given!");
-        }catch (SMSPhoneFormatException e){ log.warn("Wrong phone format!");
-        }catch (SMSDeliveryDeniedException e){ log.warn("Delivery got denied!");
-        }catch (SMSFloodException e){ log.warn("Don't flood SMS service!");
+        }catch (SMSDateFormatException e){ log.warn("Date format is wrong! " + phoneNumber);
+        }catch (SMSCredentialsException e){ log.warn("Wrong credentials are given!" );
+        }catch (SMSPhoneFormatException e){ log.warn("Wrong phone format! " + phoneNumber);
+        }catch (SMSDeliveryDeniedException e){ log.warn("Delivery got denied! " + phoneNumber);
+        }catch (SMSFloodException e){ log.warn("Don't flood SMS service! " + phoneNumber);
         }return smsResult;
     }
 }
