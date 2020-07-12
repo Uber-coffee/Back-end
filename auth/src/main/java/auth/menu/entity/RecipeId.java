@@ -15,14 +15,14 @@ public class RecipeId implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof RecipeId)) return false;
         RecipeId recipeId = (RecipeId) o;
-        return Objects.equals(beverageId, recipeId.beverageId) &&
-                Objects.equals(componentId, recipeId.componentId);
+        return getBeverageId().equals(recipeId.getBeverageId()) &&
+                getComponentId().equals(recipeId.getComponentId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(beverageId, componentId);
+        return Objects.hash(getBeverageId(), getComponentId());
     }
 }

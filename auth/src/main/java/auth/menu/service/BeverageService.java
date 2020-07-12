@@ -3,11 +3,6 @@ package auth.menu.service;
 import auth.menu.entity.Beverage;
 import auth.menu.exception.InvalidIdException;
 import auth.menu.repository.BeverageRepository;
-import org.hibernate.Session;
-import org.hibernate.SessionBuilder;
-import org.hibernate.SessionFactory;
-import org.jadira.usertype.spi.jta.HibernateSessionFactoryBean;
-import org.springframework.data.jpa.provider.HibernateUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
