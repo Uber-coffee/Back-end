@@ -5,6 +5,7 @@ import auth.security.token.AccessTokenProvider;
 import auth.service.user_details.CustomerDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@Order(2)
 public class MobileSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AccessTokenProvider accessTokenProvider;
@@ -31,12 +33,14 @@ public class MobileSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable();
 
+        http.cors();
+
         http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http
-                .antMatcher("/w/**")
+                .antMatcher("/m/**")
                 .userDetailsService(customerDetailsService)
                 .addFilterBefore(new MobileTokenAuthFilter(accessTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()

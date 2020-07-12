@@ -17,9 +17,9 @@ spring:
       hibernate:
         format_sql: true
   datasource:
-    url: ${AUTH_DB_URI}
-    username: ${AUTH_DB_USER}
-    password: ${AUTH_DB_PSWD}
+    url: ${AUTH_DB_URI:jdbc:postgresql://localhost:5432/}
+    username: ${AUTH_DB_USER:postgres}
+    password: ${AUTH_DB_PSWD:rootroot}
     driver-class-name: org.postgresql.Driver
   main:
     allow-bean-definition-overriding: true
@@ -35,6 +35,14 @@ application:
     email: ${ADMIN_EMAIL:admin@admin.ru}
     firstName: ${ADMIN_FIRST_NAME:admin}
     lastName: ${ADMIN_LAST_NAME:admin}
+    phoneNumber: ${ADMIN_PHONE:88005553535}
     password: ${ADMIN_PSWD:Administrator42}
   firebase:
     configUri: ${FIREBASE_CONFIG_URI:null}
+  smsc:
+    login: ${SMSC_LOGIN:The_GodRatiOn}
+    password: ${SMSC_PASSWORD:25D532A9367A4B07B6E661587D6A7C07}
+    session_keep_alive: ${AUTH_SES_KA:600}
+    code_keep_alive: ${AUTH_CODE_KA:180}
+    sessions_per_phone: ${AUTH_SES_NUM:3}
+    codes_per_session: ${AUTH_CODES_NUM:4}

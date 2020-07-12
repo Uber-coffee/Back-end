@@ -2,7 +2,6 @@ package auth.service.user_details;
 
 import auth.entity.Customer;
 import auth.entity.Role;
-import auth.entity.User;
 import auth.repository.CustomerRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

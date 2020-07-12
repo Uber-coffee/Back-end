@@ -1,0 +1,28 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  become: yes
+  vars:
+    service_name: 'auth'
+
+  vars_files: /home/secrets/dev_postgres_password
+  tasks:
+    - name: push image to registry
+      docker_image:
+        name: "{{ service_name }}"
+        repository: "localhost:5000/{{ service_name }}"
+        tag: "{{ lookup('env', 'BUILD_ID') }}"
+        push: yes
+        source: local
+
+    - name: deploy to docker swarm (create)
+      docker_swarm_service:
+        name: "{{ service_name }}"
+        image: "localhost:5000/{{ service_name }}:{{ lookup('env', 'BUILD_ID') }}"
+        networks:
+          - name: "net_dev"
+        env:
+          AUTH_DB_URI: "jdbc:postgresql://postgres_dev:5432/dev"
+          AUTH_DB_USER: "dev"
+          AUTH_DB_PSWD: "{{ dev_db_password }}"
+#         some env variables are skipped because they are not needed for test/qa, should be set for production
