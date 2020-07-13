@@ -29,7 +29,7 @@ public class CustomerDetailsService implements UserDetailsService {
         final Customer customer = customerRepository.findByPhoneNumber(phoneNumber);
         if (customer == null) throw new UsernameNotFoundException("");
         return org.springframework.security.core.userdetails.User.builder()
-                .username(customer.getPhoneNumber())
+                .username(Long.toString(customer.getId()))
                 .password(passwordEncoder.encode(""))
                 .authorities(List.of(Role.ROLE_CUSTOMER))
                 .disabled(false)

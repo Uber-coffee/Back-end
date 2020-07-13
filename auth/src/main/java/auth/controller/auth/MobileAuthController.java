@@ -2,11 +2,12 @@ package auth.controller.auth;
 
 import auth.config.swagger2.SwaggerMethodToDocument;
 import auth.exception.TokenException;
-import auth.exception.UserAlreadyExistException;
 import auth.payload.MobileSignupRequest;
 import auth.service.auth.MobileAuthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,15 @@ public class MobileAuthController {
     @SwaggerMethodToDocument
     @PostMapping(value = "/signup")
     @ApiOperation(value = "Provide phone, session_Id and verification code")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Sign-up request accepted"),
+            @ApiResponse(code = 201, message = "Customer created and registered"),
+            @ApiResponse(code = 202, message = "Customer registered"),
+            @ApiResponse(code = 510, message = "Sessions overflow for a single phone number"),
+            @ApiResponse(code = 406, message = "No session_id was provided"),
+            @ApiResponse(code = 422, message = "Session_Id doesn't match the provided phone number"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     public void signup(@Valid @RequestBody MobileSignupRequest mobileSignupRequest,
                        HttpServletResponse httpServletResponse) throws TokenException, IOException {
         mobileAuthService.signup(mobileSignupRequest, httpServletResponse);

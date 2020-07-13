@@ -20,14 +20,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -167,41 +163,26 @@ class MobileAuthServiceTest {
     @Test
     void login() throws TokenException {
         Customer customer = new Customer();
-        customer.setPhoneNumber("8800553535");
+        customer.setPhoneNumber("+79817429596");
         customer.setFirstName("test");
         customer.setLastName("test");
         customerRepository.save(customer);
         HttpServletResponse httpServletResponse = new MockHttpServletResponse();
-        mobileAuthService.login("8800553535", httpServletResponse);
+        mobileAuthService.login("+79817429596", httpServletResponse);
         assertNotNull(httpServletResponse.getHeader("auth"));
         assertNotNull(httpServletResponse.getHeader("ref"));
     }
 
-/*//TODO New tests for sign-up method
     @Test
-    void loginException() {
+    void signinAttempt()throws TokenException{
         Customer customer = new Customer();
-        customer.setPhoneNumber("8800553535");
-       // customer.setFirstName("test");
-        //customer.setLastName("test");
+        customer.setPhoneNumber("+79817429496");
         customerRepository.save(customer);
         HttpServletResponse httpServletResponse = new MockHttpServletResponse();
-        UUID uuid = UUID.randomUUID();
-        assertThrows(UserAlreadyExistException.class,
-                () -> mobileAuthService.signup(
-                        new MobileSignupRequest(
-                                "8800553535",
-                                "3535",
-                                UUID.randomUUID()),
-                        httpServletResponse));
+        MobileSignupRequest mobileSignupRequest = new MobileSignupRequest();
+        mobileSignupRequest.setPhoneNumber("+79817429496");
+        mobileAuthService.signup(mobileSignupRequest, httpServletResponse);
+        assertEquals(200, httpServletResponse.getStatus());
+        assertNotNull(httpServletResponse.getHeader("session_id"));
     }
-
-    @Test
-    void signup() throws TokenException, UserAlreadyExistException {
-        HttpServletResponse httpServletResponse = new MockHttpServletResponse();
-        mobileAuthService.signup(new MobileSignupRequest("+79817429496", "6969", UUID.randomUUID()), httpServletResponse);
-       // assertEquals(1, customers.entrySet().size());
-        //assertNotNull(httpServletResponse.getHeader("auth"));
-        //assertNotNull(httpServletResponse.getHeader("ref"));
-    }*/
 }

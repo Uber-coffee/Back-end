@@ -20,7 +20,7 @@ public class UserDetailsService implements org.springframework.security.core.use
         final User user = userRepository.findByEmail(email);
         if(user == null) throw new UsernameNotFoundException("");
         return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())
+                .username(Long.toString(user.getId()))
                 .password(user.getPassword())
                 .authorities(user.getRoles())
                 .disabled(false)

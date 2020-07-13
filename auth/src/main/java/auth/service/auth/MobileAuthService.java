@@ -21,13 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -100,7 +98,7 @@ public class MobileAuthService {
     }
 
     public void signup(MobileSignupRequest mobileSignupRequest, HttpServletResponse httpServletResponse)
-            throws TokenException, IOException {
+            throws TokenException{
 
         final String phoneNumber = phoneVerifyService.verifyToken(mobileSignupRequest.getPhoneNumber());
 
@@ -113,21 +111,19 @@ public class MobileAuthService {
             AuthSession buffer = authSessionRepository.findBySessionId(mobileSignupRequest.getSessionID());
 
             if (buffer == null){
-                httpServletResponse.sendError(406);
-                throw new BadCredentialsException("You are supposed to send session_id, aren't you?");
+                httpServletResponse.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
             } else {
                 if(buffer.getPhoneNumber().equals(phoneNumber)){
                     initiateValidationSession(buffer, httpServletResponse, mobileSignupRequest);
 
                 }else{
-                    httpServletResponse.sendError(422);
-                    throw new IllegalStateException();
+                    httpServletResponse.setStatus(422);
                 }
             }
         }
     }
 
-    private void initiateValidationSession(AuthSession authSession, HttpServletResponse httpServletResponse, MobileSignupRequest mobileSignupRequest) throws IOException {
+    private void initiateValidationSession(AuthSession authSession, HttpServletResponse httpServletResponse, MobileSignupRequest mobileSignupRequest) {
         List<AuthSession> authSessionList = authSessionRepository.findByPhoneNumber(authSession.getPhoneNumber());
 
         if (authSessionList.stream().filter(this::isAuthSessionValid).count() < this.AuthSessionsPerPhone){
@@ -145,8 +141,8 @@ public class MobileAuthService {
         }
     }
 
-    private void sessionsPerCustomerOverflow(HttpServletResponse httpServletResponse) throws IOException {
-        httpServletResponse.sendError(510);
+    private void sessionsPerCustomerOverflow(HttpServletResponse httpServletResponse){
+        httpServletResponse.setStatus(510);
         System.out.println("Too many sessions for a single customer");
     }
 
@@ -191,7 +187,7 @@ public class MobileAuthService {
         this.refreshTokenProvider.writeTokenToResponse(refreshToken, httpServletResponse);
     }
 
-    private void initiateExtraMessageSession(AuthSession authSession, HttpServletResponse httpServletResponse, String phoneNumber, MobileSignupRequest mobileSignupRequest) throws IOException {
+    private void initiateExtraMessageSession(AuthSession authSession, HttpServletResponse httpServletResponse, String phoneNumber, MobileSignupRequest mobileSignupRequest){
         if (authSessionRepository.countByPhoneNumber(mobileSignupRequest.getPhoneNumber()) < this.AuthSessionsPerPhone){
             if (authCodeRepository.countBySession(authSession) < this.AuthCodesPerSession){
                 final String regCode = generateCodeForService(phoneNumber);
@@ -209,7 +205,7 @@ public class MobileAuthService {
         }
     }
 
-    private void initiateRegistrationSession(HttpServletResponse httpServletResponse, String phoneNumber) throws IOException {
+    private void initiateRegistrationSession(HttpServletResponse httpServletResponse, String phoneNumber){
         final String regCode = generateCodeForService(phoneNumber);
         final UUID currentSessionID = UUID.randomUUID();
 
@@ -221,7 +217,7 @@ public class MobileAuthService {
             saveNewAuthCodeWithNewSession(regCode, authSession);
             httpServletResponse.addHeader("session_id", currentSessionID.toString());
         } else {
-            httpServletResponse.sendError(500);
+            httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
