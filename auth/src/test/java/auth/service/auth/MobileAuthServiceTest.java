@@ -148,7 +148,6 @@ class MobileAuthServiceTest {
         });
     }
 
-
     public void initAuthSessionRepository(){
         authSessionRepository = mock(AuthSessionRepository.class);
     }
@@ -156,8 +155,6 @@ class MobileAuthServiceTest {
     public void initAuthCodeRepository(){
         authCodeRepository = mock(AuthCodeRepository.class);
     }
-
-
 
     @Test
     void login() throws TokenException {

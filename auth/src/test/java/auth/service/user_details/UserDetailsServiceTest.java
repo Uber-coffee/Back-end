@@ -32,6 +32,7 @@ class UserDetailsServiceTest {
                 i -> users.get(i.getArgument(0))
         );
         User user = new User(
+                (long) 1,
                 "test",
                 "testovich",
                 "test@test.ru",
@@ -47,7 +48,7 @@ class UserDetailsServiceTest {
         UserDetailsService userDetailsService = new UserDetailsService(userRepository);
         UserDetails userDetails = userDetailsService.loadUserByUsername("test@test.ru");
         assertNotNull(userDetails);
-        assertEquals(userDetails.getUsername(), "test@test.ru");
+        assertEquals(userDetails.getUsername(), "1");
         assertEquals(userDetails.getPassword(), "password");
         assertArrayEquals(userDetails.getAuthorities().toArray(), List.of(Role.ROLE_MANAGER).toArray());
     }

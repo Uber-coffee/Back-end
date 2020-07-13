@@ -33,6 +33,7 @@ class CustomerDetailsServiceTest {
                 i-> customers.get(i.getArgument(0))
         );
         Customer customer = new Customer();
+        customer.setId((long)1);
         customer.setFirstName("test");
         customer.setLastName("testovich");
         customer.setPhoneNumber("88005553535");
@@ -44,7 +45,7 @@ class CustomerDetailsServiceTest {
         CustomerDetailsService customerDetailsService = new CustomerDetailsService(customerRepository, passwordEncoder);
         UserDetails userDetails = customerDetailsService.loadUserByUsername("88005553535");
         assertNotNull(userDetails);
-        assertEquals(userDetails.getUsername(), "88005553535");
+        assertEquals(userDetails.getUsername(), "1");
         assertTrue(passwordEncoder.matches("", userDetails.getPassword()));
         assertArrayEquals(userDetails.getAuthorities().toArray(), List.of(Role.ROLE_CUSTOMER).toArray());
     }
