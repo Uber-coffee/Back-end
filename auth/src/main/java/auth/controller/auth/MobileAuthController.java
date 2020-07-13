@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/m/auth")
@@ -49,7 +48,7 @@ public class MobileAuthController {
             @ApiResponse(code = 500, message = "Internal server error")
     })
     public void signup(@Valid @RequestBody MobileSignupRequest mobileSignupRequest,
-                       HttpServletResponse httpServletResponse) throws TokenException, IOException {
+                       HttpServletResponse httpServletResponse) throws TokenException{
         mobileAuthService.signup(mobileSignupRequest, httpServletResponse);
     }
 }
