@@ -26,7 +26,7 @@ public class SMSPhoneVerifyService implements PhoneVerifyServiceSMS{
 
         String[] retStatus = smsc.get_status(Integer.parseInt(retSend[0]), phoneNumber.substring(1), 1);
 
-        if (retStatus.length < 2 ){
+        if (retStatus.length < 1 ){
             return false;
         }
 
