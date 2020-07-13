@@ -3,7 +3,6 @@ package auth.exception.handle;
 import auth.exception.TokenException;
 import auth.exception.UserAlreadyExistException;
 import auth.exception.UserNotFoundException;
-import auth.menu.exception.InvalidIdException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -57,14 +56,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 new Date(),
                 "User doesn't exists."
         ), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(value = {InvalidIdException.class})
-    protected ResponseEntity<Object> InvalidIdExceptionHandle(InvalidIdException invalidIdException) {
-        return new ResponseEntity<>(new ApiExceptionResponseEntity(
-                new Date(),
-                invalidIdException.getMessage()), HttpStatus.NOT_FOUND
-        );
     }
 
     @Data
