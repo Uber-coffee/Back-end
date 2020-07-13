@@ -188,7 +188,6 @@ public class MobileAuthService {
     }
 
     private void initiateExtraMessageSession(AuthSession authSession, HttpServletResponse httpServletResponse, String phoneNumber, MobileSignupRequest mobileSignupRequest){
-        if (authSessionRepository.countByPhoneNumber(mobileSignupRequest.getPhoneNumber()) < this.AuthSessionsPerPhone){
             if (authCodeRepository.countBySession(authSession) < this.AuthCodesPerSession){
                 final String regCode = generateCodeForService(phoneNumber);
 
@@ -198,11 +197,13 @@ public class MobileAuthService {
 
                 httpServletResponse.addHeader("session_id", mobileSignupRequest.getSessionID().toString());
             } else {
-                initiateRegistrationSession(httpServletResponse, phoneNumber);
+
+                if (authSessionRepository.countByPhoneNumber(mobileSignupRequest.getPhoneNumber()) < this.AuthSessionsPerPhone) {
+                    initiateRegistrationSession(httpServletResponse, phoneNumber);
+                } else {
+                    sessionsPerCustomerOverflow(httpServletResponse);
+                }
             }
-        } else {
-            sessionsPerCustomerOverflow(httpServletResponse);
-        }
     }
 
     private void initiateRegistrationSession(HttpServletResponse httpServletResponse, String phoneNumber){
