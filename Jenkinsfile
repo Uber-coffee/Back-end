@@ -29,8 +29,10 @@ node {
         }
 
         if (env.BRANCH_NAME == 'develop' || env.BRANCH_NAME == 'master') {
-            stage('Build docker image') {
-                docker.build("auth_mobile:${env.BUILD_ID}")
+            dir('auth') {
+                stage('Build docker image') {
+                    docker.build("auth_mobile:${env.BUILD_ID}")
+                }
             }
 
             stage('Build success notification') {
