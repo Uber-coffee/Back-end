@@ -16,17 +16,14 @@ node {
             telegram_msg("Build ${env.BRANCH_NAME} started. Build id: ${env.BUILD_ID}")
         }
 
+        dir('auth') {
+            docker.image('maven:3.6.3-openjdk-11').inside() {
+                stage('Run tests') {
+                    sh 'mvn test'
+                }
 
-        docker.image('maven:3.6.3-openjdk-11').inside() {
-            dir('auth') {
-                docker.image('maven:3.6.3-openjdk-11').inside() {
-                    stage('Run tests') {
-                        sh 'mvn test'
-                    }
-
-                    stage('Build project') {
-                        sh 'mvn -DskipTests package spring-boot:repackage'
-                    }
+                stage('Build project') {
+                    sh 'mvn -DskipTests package spring-boot:repackage'
                 }
             }
         }
