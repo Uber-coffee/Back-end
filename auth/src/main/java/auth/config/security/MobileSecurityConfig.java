@@ -1,5 +1,6 @@
 package auth.config.security;
 
+import auth.security.filter.DefaultTokenAuthFilter;
 import auth.security.filter.MobileTokenAuthFilter;
 import auth.security.token.AccessTokenProvider;
 import auth.service.user_details.CustomerDetailsService;
@@ -20,7 +21,9 @@ public class MobileSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] WHITE_LIST = {
             "/m/**",
-            "/auth/**",
+            "/m/auth/refresh",
+            "/m/auth/signup",
+            "/m/auth/login",
             "/configuration/**",
             "/swagger-resources/**",
             "/swagger-ui.html",
@@ -60,7 +63,7 @@ public class MobileSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .antMatcher("/m/**")
                 .userDetailsService(customerDetailsService)
-                .addFilterBefore(new MobileTokenAuthFilter(accessTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new DefaultTokenAuthFilter(accessTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated();
