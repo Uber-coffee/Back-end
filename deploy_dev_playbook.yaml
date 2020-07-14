@@ -3,7 +3,7 @@
   connection: local
   become: yes
   vars:
-    service_name: 'auth_mobile'
+    service_name: 'auth-mobile'
 
   vars_files: /home/secrets/dev_postgres_password
   tasks:

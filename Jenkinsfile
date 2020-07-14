@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-// Jenkins file for auth_mobile service
+// Jenkins file for auth-mobile service
 
 node {
     try {
@@ -31,12 +31,12 @@ node {
         if (env.BRANCH_NAME == 'develop' || env.BRANCH_NAME == 'master') {
             dir('auth') {
                 stage('Build docker image') {
-                    docker.build("auth_mobile:${env.BUILD_ID}")
+                    docker.build("auth-mobile:${env.BUILD_ID}")
                 }
             }
 
             stage('Build success notification') {
-                telegram_msg("Build ${env.BRANCH_NAME} finished, image: auth_mobile:${env.BUILD_ID}")
+                telegram_msg("Build ${env.BRANCH_NAME} finished, image: auth-mobile:${env.BUILD_ID}")
             }
 
             stage('Push to registry and deploy (dev)') {
@@ -63,7 +63,7 @@ node {
 
 def telegram_msg(String msg) {
     telegramSend(
-            message: "Auth_mobile service: " + msg,
+            message: "Auth-mobile service: " + msg,
             chatId: -1001336690990
     )
 }
