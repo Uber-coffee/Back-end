@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class MobileSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] WHITE_LIST = {
-            "/m/**",
             "/m/auth/refresh",
             "/m/auth/signup",
             "/m/auth/login",
