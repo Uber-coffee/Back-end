@@ -3,6 +3,7 @@ package auth.security.filter;
 import auth.entity.Role;
 import auth.exception.TokenException;
 import auth.exception.UserNotFoundException;
+import auth.exception.WrongAuthServiceException;
 import auth.security.token.AccessTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +26,7 @@ public class MobileTokenAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException{
         try {
             accessTokenProvider.validateToken(httpServletRequest);
             final List<String> roles = accessTokenProvider.getRoles(httpServletRequest);
@@ -42,6 +43,10 @@ public class MobileTokenAuthFilter extends OncePerRequestFilter {
         } catch (UserNotFoundException e) {
             SecurityContextHolder.clearContext();
             httpServletResponse.sendError(HttpStatus.I_AM_A_TEAPOT.value(), "Everything is ok, but user doesn't exists.");
+            return;
+        } catch (WrongAuthServiceException e){
+            SecurityContextHolder.clearContext();
+            httpServletResponse.sendError(HttpStatus.CONFLICT.value(), "Why are you still here??");
             return;
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);

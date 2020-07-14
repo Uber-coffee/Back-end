@@ -1,4 +1,4 @@
-package auth.controller.auth;
+package auth.controller;
 
 import auth.config.swagger2.SwaggerMethodToDocument;
 import auth.exception.TokenException;

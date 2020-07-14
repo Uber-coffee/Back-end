@@ -12,12 +12,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MobileSignupRequest {
 
-    //@Pattern(regexp = "^[A-Za-zА-Яа-я -.']*$")
-    //private String firstName;
-
-    //@Pattern(regexp = "^[A-Za-zА-Яа-я -.']*$")
-    //private String lastName;
-
     @NotBlank
     private String phoneNumber;
 

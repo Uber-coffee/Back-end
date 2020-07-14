@@ -25,8 +25,8 @@ public class SwaggerConfiguration{
     }
 
     private ApiInfo apiDetails(){
-        return new ApiInfo("Uber - Coffee API",
-                "Project of educational reasons" ,
+        return new ApiInfo("Uber - Coffee Mobile Auth API",
+                "Project for educational purposes" ,
                 "0.1",
                 "Free, at least now",
                 new springfox.documentation.service.Contact("Philip Yaromenka", "https://www.epam-group.ru", "https://www.proverka@kgb.ru"),

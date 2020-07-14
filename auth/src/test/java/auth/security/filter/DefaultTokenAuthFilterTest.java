@@ -3,6 +3,7 @@ package auth.security.filter;
 import auth.entity.Role;
 import auth.exception.TokenException;
 import auth.exception.UserNotFoundException;
+import auth.exception.WrongAuthServiceException;
 import auth.security.token.AccessTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ class DefaultTokenAuthFilterTest {
     private Authentication auth;
 
     @BeforeEach
-    public void init() throws TokenException, UserNotFoundException {
+    public void init() throws TokenException, UserNotFoundException, WrongAuthServiceException {
         accessTokenProvider = mock(AccessTokenProvider.class);
         doAnswer(i -> {
             HttpServletRequest httpServletRequest = i.getArgument(0);

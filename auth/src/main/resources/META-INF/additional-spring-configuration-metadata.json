@@ -21,36 +21,6 @@
       "description": "Refresh token expire time in msec."
     },
     {
-      "name": "application.admin.email",
-      "type": "java.lang.String",
-      "description": "Admin email."
-    },
-    {
-      "name": "application.admin.firstName",
-      "type": "java.lang.String",
-      "description": "Admin first name."
-    },
-    {
-      "name": "application.admin.lastName",
-      "type": "java.lang.String",
-      "description": "Admin last name."
-    },
-    {
-      "name": "application.admin.phoneNumber",
-      "type": "java.lang.String",
-      "description": "Admin phone number."
-    },
-    {
-      "name": "application.admin.password",
-      "type": "java.lang.String",
-      "description": "Admin password."
-    },
-    {
-      "name": "application.firebase.configUri",
-      "type": "java.lang.String",
-      "description": "Firebase config URI."
-    },
-    {
       "name": "application.smsc.session_keep_alive",
       "type": "java.lang.Integer",
       "description": "Time in seconds to keep auth session alive"

@@ -31,14 +31,6 @@ application:
     refreshToken:
       secret: ${REFRESH_AUTH_TOKEN_SECRET:refresh-token-secret}
       expire: ${REFRESH_AUTH_TOKEN_EXPIRE:86400000}
-  admin:
-    email: ${ADMIN_EMAIL:admin@admin.ru}
-    firstName: ${ADMIN_FIRST_NAME:admin}
-    lastName: ${ADMIN_LAST_NAME:admin}
-    phoneNumber: ${ADMIN_PHONE:88005553535}
-    password: ${ADMIN_PSWD:Administrator42}
-  firebase:
-    configUri: ${FIREBASE_CONFIG_URI:null}
   smsc:
     login: ${SMSC_LOGIN:The_GodRatiOn}
     password: ${SMSC_PASSWORD:25D532A9367A4B07B6E661587D6A7C07}

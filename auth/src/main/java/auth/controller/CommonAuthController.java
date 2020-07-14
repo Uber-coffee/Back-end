@@ -1,8 +1,9 @@
-package auth.controller.auth;
+package auth.controller;
 
 import auth.config.swagger2.SwaggerMethodToDocument;
 import auth.exception.TokenException;
 import auth.exception.UserNotFoundException;
+import auth.exception.WrongAuthServiceException;
 import auth.service.auth.CommonAuthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,7 +30,7 @@ public class CommonAuthController {
     @ApiOperation(value = "Refresh your token")
     public void refresh(HttpServletRequest httpServletRequest,
                         HttpServletResponse httpServletResponse)
-            throws TokenException, UserNotFoundException {
+            throws TokenException, UserNotFoundException, WrongAuthServiceException {
         commonAuthService.refresh(httpServletRequest, httpServletResponse);
     }
 

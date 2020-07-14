@@ -3,6 +3,7 @@ package auth.service.auth;
 import auth.entity.InvalidToken;
 import auth.exception.TokenException;
 import auth.exception.UserNotFoundException;
+import auth.exception.WrongAuthServiceException;
 import auth.repository.InvalidTokenRepository;
 import auth.security.token.AccessTokenProvider;
 import auth.security.token.RefreshTokenProvider;
@@ -44,7 +45,7 @@ public class CommonAuthService {
         invalidTokenRepository.save(token);
     }
 
-    public void refresh(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws TokenException, UserNotFoundException {
+    public void refresh(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws TokenException, UserNotFoundException, WrongAuthServiceException {
         refreshTokenProvider.validateToken(httpServletRequest);
 
         final Authentication auth = refreshTokenProvider.getAuthentication(httpServletRequest);

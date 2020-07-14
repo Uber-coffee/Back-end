@@ -4,9 +4,9 @@ import auth.config.AppProperties;
 import auth.entity.Role;
 import auth.exception.TokenException;
 import auth.exception.UserNotFoundException;
+import auth.exception.WrongAuthServiceException;
 import auth.repository.InvalidTokenRepository;
 import auth.service.user_details.CustomerDetailsService;
-import auth.service.user_details.UserDetailsService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.joda.time.DateTime;
@@ -37,7 +37,6 @@ class RefreshTokenProviderTest {
 
     private AppProperties appProperties;
 
-    private UserDetailsService userDetailsService;
 
     private CustomerDetailsService customerDetailsService;
 
@@ -46,13 +45,11 @@ class RefreshTokenProviderTest {
     @BeforeEach
     public void init() {
         initAppProperties();
-        initUserDetailsService();
         initCustomerDetailsService();
         invalidTokenRepository = mock(InvalidTokenRepository.class);
         when(invalidTokenRepository.existsByToken(anyString())).thenReturn(false);
         tokenProvider = new RefreshTokenProvider(
                 appProperties,
-                userDetailsService,
                 invalidTokenRepository,
                 customerDetailsService
         );
@@ -68,19 +65,6 @@ class RefreshTokenProviderTest {
         });
     }
 
-    public void initUserDetailsService() {
-        userDetailsService = mock(UserDetailsService.class);
-        when(userDetailsService.loadUserByUsername(anyString())).then(
-                i -> org.springframework.security.core.userdetails.User.builder()
-                        .username(i.getArgument(0))
-                        .password("password")
-                        .authorities(List.of(Role.ROLE_MANAGER))
-                        .disabled(false)
-                        .accountLocked(false)
-                        .credentialsExpired(false)
-                        .accountExpired(false)
-                        .build());
-    }
 
     public void initCustomerDetailsService() {
         customerDetailsService = mock(CustomerDetailsService.class);
@@ -218,7 +202,7 @@ class RefreshTokenProviderTest {
     }
 
     @Test
-    void getAuthentication() throws TokenException, UserNotFoundException {
+    void getAuthentication() throws TokenException, UserNotFoundException, WrongAuthServiceException {
         final String token = Jwts.builder()
                 .setSubject("89500190736")
                 .setIssuedAt(new Date())

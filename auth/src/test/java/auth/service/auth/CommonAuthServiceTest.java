@@ -4,6 +4,7 @@ import auth.entity.InvalidToken;
 import auth.entity.Role;
 import auth.exception.TokenException;
 import auth.exception.UserNotFoundException;
+import auth.exception.WrongAuthServiceException;
 import auth.repository.InvalidTokenRepository;
 import auth.security.token.AccessTokenProvider;
 import auth.security.token.RefreshTokenProvider;
@@ -46,7 +47,7 @@ class CommonAuthServiceTest {
     private Map<DateTime, String> tokens;
 
     @BeforeEach
-    public void init() throws TokenException, UserNotFoundException {
+    public void init() throws TokenException, UserNotFoundException, WrongAuthServiceException {
         initAccessTokenProvider();
         initRefreshTokenProvider();
         initInvalidTokenRepository();
@@ -55,7 +56,7 @@ class CommonAuthServiceTest {
         commonAuthService = new CommonAuthService(accessTokenProvider, refreshTokenProvider, invalidTokenRepository);
     }
 
-    public void initAccessTokenProvider() throws TokenException, UserNotFoundException {
+    public void initAccessTokenProvider() throws TokenException, UserNotFoundException,  WrongAuthServiceException {
         accessTokenProvider = mock(AccessTokenProvider.class);
         when(accessTokenProvider.createToken(any(Authentication.class))).then(i -> {
             Authentication auth = i.getArgument(0);
@@ -96,7 +97,7 @@ class CommonAuthServiceTest {
         }).when(accessTokenProvider).writeTokenToResponse(anyString(), any(HttpServletResponse.class));
     }
 
-    public void initRefreshTokenProvider() throws TokenException, UserNotFoundException {
+    public void initRefreshTokenProvider() throws TokenException, UserNotFoundException,  WrongAuthServiceException  {
         refreshTokenProvider = mock(RefreshTokenProvider.class);
         when(refreshTokenProvider.createToken(any(Authentication.class))).then(i -> {
             Authentication auth = i.getArgument(0);
@@ -163,7 +164,7 @@ class CommonAuthServiceTest {
     }
 
     @Test
-    void refresh() throws TokenException, UserNotFoundException {
+    void refresh() throws TokenException, UserNotFoundException, WrongAuthServiceException {
         HttpServletResponse httpServletResponse = new MockHttpServletResponse();
         commonAuthService.refresh(httpServletRequest, httpServletResponse);
         assertEquals(2, tokens.entrySet().size());
