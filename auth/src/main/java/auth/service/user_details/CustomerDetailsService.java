@@ -2,6 +2,7 @@ package auth.service.user_details;
 
 import auth.entity.Customer;
 import auth.entity.Role;
+import auth.exception.UserNotFoundException;
 import auth.repository.CustomerRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,6 +29,20 @@ public class CustomerDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
         final Customer customer = customerRepository.findByPhoneNumber(phoneNumber);
         if (customer == null) throw new UsernameNotFoundException("");
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(Long.toString(customer.getId()))
+                .password(passwordEncoder.encode(""))
+                .authorities(List.of(Role.ROLE_CUSTOMER))
+                .disabled(false)
+                .accountLocked(false)
+                .credentialsExpired(false)
+                .accountExpired(false)
+                .build();
+    }
+
+    public UserDetails loadById(Long id) throws UserNotFoundException {
+
+        final Customer customer = customerRepository.findById(id).orElseThrow(UserNotFoundException::new);
         return org.springframework.security.core.userdetails.User.builder()
                 .username(Long.toString(customer.getId()))
                 .password(passwordEncoder.encode(""))

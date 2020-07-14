@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -43,7 +44,7 @@ class RefreshTokenProviderTest {
     private InvalidTokenRepository invalidTokenRepository;
 
     @BeforeEach
-    public void init() {
+    public void init() throws UserNotFoundException{
         initAppProperties();
         initCustomerDetailsService();
         invalidTokenRepository = mock(InvalidTokenRepository.class);
@@ -66,11 +67,11 @@ class RefreshTokenProviderTest {
     }
 
 
-    public void initCustomerDetailsService() {
+    public void initCustomerDetailsService() throws UserNotFoundException{
         customerDetailsService = mock(CustomerDetailsService.class);
-        when(customerDetailsService.loadUserByUsername(anyString())).then(
+        when(customerDetailsService.loadById(anyLong())).then(
                 i -> org.springframework.security.core.userdetails.User.builder()
-                        .username(i.getArgument(0))
+                        .username(i.getArgument(0).toString())
                         .password("password")
                         .authorities(List.of(Role.ROLE_CUSTOMER))
                         .disabled(false)

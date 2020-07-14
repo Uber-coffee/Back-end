@@ -144,7 +144,7 @@ public abstract class TokenProvider {
         try {
             UserDetails userDetails;
             if(roles.contains(Role.ROLE_CUSTOMER.name())) {
-                userDetails = customerDetailsService.loadUserByUsername(subject);
+                userDetails = customerDetailsService.loadById(Long.parseLong(subject));
                 return new UsernamePasswordAuthenticationToken(
                         userDetails.getUsername(),
                         userDetails.getPassword(),
