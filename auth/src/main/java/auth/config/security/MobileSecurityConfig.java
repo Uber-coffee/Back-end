@@ -1,7 +1,6 @@
 package auth.config.security;
 
 import auth.security.filter.DefaultTokenAuthFilter;
-import auth.security.filter.MobileTokenAuthFilter;
 import auth.security.token.AccessTokenProvider;
 import auth.service.user_details.CustomerDetailsService;
 import org.springframework.context.annotation.Bean;
