@@ -102,23 +102,27 @@ public class MobileAuthService {
 
         final String phoneNumber = phoneVerifyService.verifyToken(mobileSignupRequest.getPhoneNumber());
 
-
-
         if (authSessionRepository.findByPhoneNumber(phoneNumber).size() < 1){
             initiateRegistrationSession(httpServletResponse, phoneNumber);
 
         } else {
-            AuthSession buffer = authSessionRepository.findBySessionId(mobileSignupRequest.getSessionID());
 
-            if (buffer == null){
-                httpServletResponse.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-            } else {
-                if(buffer.getPhoneNumber().equals(phoneNumber)){
-                    initiateValidationSession(buffer, httpServletResponse, mobileSignupRequest);
+            try{
+                UUID sessionID = UUID.fromString(mobileSignupRequest.getSessionID());
+                AuthSession buffer = authSessionRepository.findBySessionId(sessionID);
 
-                }else{
-                    httpServletResponse.setStatus(422);
+                if (buffer == null) {
+                    httpServletResponse.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+                } else {
+                    if (buffer.getPhoneNumber().equals(phoneNumber)) {
+                        initiateValidationSession(buffer, httpServletResponse, mobileSignupRequest);
+
+                    } else {
+                        httpServletResponse.setStatus(422);
+                    }
                 }
+            }catch (IllegalArgumentException e){
+                httpServletResponse.setStatus(409);
             }
         }
     }

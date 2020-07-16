@@ -17,5 +17,5 @@ public class MobileSignupRequest {
 
     private String verifyCode;
 
-    private UUID sessionID;
+    private String sessionID;
 }

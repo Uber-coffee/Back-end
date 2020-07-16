@@ -45,7 +45,8 @@ public class MobileAuthController {
             @ApiResponse(code = 510, message = "Sessions overflow for a single phone number"),
             @ApiResponse(code = 406, message = "No session_id was provided"),
             @ApiResponse(code = 422, message = "Session_Id doesn't match the provided phone number"),
-            @ApiResponse(code = 500, message = "Internal server error")
+            @ApiResponse(code = 500, message = "Internal server error"),
+            @ApiResponse(code = 409, message = "Session_ID can not be processed")
     })
     public void signup(@Valid @RequestBody MobileSignupRequest mobileSignupRequest,
                        HttpServletResponse httpServletResponse) throws TokenException{
