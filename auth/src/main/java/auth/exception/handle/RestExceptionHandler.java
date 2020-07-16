@@ -35,7 +35,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {UserAlreadyExistException.class})
-    protected ResponseEntity<Object> UserAlreadyExistExceptionHandle() {
+    protected ResponseEntity<Object> userAlreadyExistExceptionHandle() {
         return new ResponseEntity<>(new ApiExceptionResponseEntity(
                 new Date(),
                 "User already exists."
@@ -43,7 +43,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {TokenException.class})
-    protected ResponseEntity<Object> TokenExceptionHandle() {
+    protected ResponseEntity<Object> tokenExceptionHandle() {
         return new ResponseEntity<>(new ApiExceptionResponseEntity(
                 new Date(),
                 "Invalid or expired token."
@@ -51,7 +51,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {UserNotFoundException.class})
-    protected ResponseEntity<Object> UserNotFoundExceptionHandle() {
+    protected ResponseEntity<Object> userNotFoundExceptionHandle() {
         return new ResponseEntity<>(new ApiExceptionResponseEntity(
                 new Date(),
                 "User doesn't exists."
